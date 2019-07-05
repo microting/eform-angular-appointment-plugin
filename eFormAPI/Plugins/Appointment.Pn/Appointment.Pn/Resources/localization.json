@@ -1,0 +1,23 @@
+[
+	{
+		"Key": "Appointment",
+		"LocalizedValue": {
+			"da": "Aftaler",
+			"en-US": "Appointment"
+		}
+	},
+	{
+		"Key": "Appointments",
+		"LocalizedValue": {
+			"da": "Aftaler",
+			"en-US": "Appointments"
+		}
+	},
+	{
+		"Key": "Settings",
+		"LocalizedValue": {
+			"da": "Indstillinger",
+			"en-US": "Settings"
+		}
+	}
+]
