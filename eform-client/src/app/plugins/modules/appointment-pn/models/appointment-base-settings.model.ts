@@ -16,4 +16,5 @@ export class AppointmentBaseSettingsModel {
   directoryId: string;
   applicationId: string;
   colorsRule: boolean;
+  outlookAddinId: string;
 }

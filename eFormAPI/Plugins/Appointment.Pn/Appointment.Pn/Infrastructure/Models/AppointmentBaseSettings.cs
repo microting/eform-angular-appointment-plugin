@@ -36,5 +36,7 @@ namespace Appointment.Pn.Infrastructure.Models
         
         public bool ColorsRule { get; set; }
         
+        public string OutlookAddinId { get; set; }
+        
     }
 }

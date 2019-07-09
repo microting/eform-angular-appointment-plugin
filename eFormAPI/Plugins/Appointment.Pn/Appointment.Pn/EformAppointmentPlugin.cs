@@ -68,6 +68,7 @@ namespace Appointment.Pn
         {
             services.AddSingleton<IAppointmentLocalizationService, AppointmentLocalizationService>();
             services.AddTransient<IAppointmentPnSettingsService, AppointmentPnSettingsService>();
+            services.AddTransient<IOutlookAddinService, OutllokAddinService>();
         }
 
         public void ConfigureOptionsServices(IServiceCollection services, IConfiguration configuration)

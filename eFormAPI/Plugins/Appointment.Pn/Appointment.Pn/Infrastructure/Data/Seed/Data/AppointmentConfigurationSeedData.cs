@@ -92,6 +92,11 @@ namespace Appointment.Pn.Infrastructure.Data.Seed.Data
                 Name = "AppointmentBaseSettings:ApplicationId",
                 Value = "..."
             },
+            new PluginConfigurationValue()
+            {
+                Name = "AppointmentBaseSettings:OutlookAddinId",
+                Value = "..."
+            },
         };
     }
 }

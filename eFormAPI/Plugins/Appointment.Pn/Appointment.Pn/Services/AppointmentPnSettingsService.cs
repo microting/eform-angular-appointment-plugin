@@ -66,6 +66,11 @@ namespace Appointment.Pn.Services
 
                 }
 
+                if (option.OutlookAddinId == "..." || string.IsNullOrEmpty(option.OutlookAddinId))
+                {
+                    await _options.UpdateDb(settings => settings.OutlookAddinId = Guid.NewGuid().ToString(), _dbContext, UserId);
+                }
+
                 return new OperationDataResult<AppointmentBaseSettings>(true, option);
             }
             catch(Exception e)
@@ -100,6 +105,7 @@ namespace Appointment.Pn.Services
                     settings.DirectoryId = appointmentBaseSettings.DirectoryId;
                     settings.ApplicationId = appointmentBaseSettings.ApplicationId;
                     settings.ColorsRule = appointmentBaseSettings.ColorsRule;
+                    settings.OutlookAddinId = appointmentBaseSettings.OutlookAddinId;
                 }, _dbContext, UserId);
 
                 return new OperationResult(true,

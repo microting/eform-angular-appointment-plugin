@@ -165,6 +165,15 @@
             <label for="colorsRule">{{'Colors Rule' | translate}}</label>
           </div>
         </div>
+        <div class="col-md-12">
+          <div class="md-form input-group">
+            <input mdbInputDirective
+                   [mdbValidate]="false" [(ngModel)]="settingsModel.outlookAddinId"
+                   type="text" name="outlookAddinId" #outlookAddinId="ngModel"
+                   id="outlookAddinId" class="form-control">
+            <label for="outlookAddinId">{{'Outlook Add-in Id' | translate}}</label>
+          </div>
+        </div>
       </div>
     </div>
   </div>
