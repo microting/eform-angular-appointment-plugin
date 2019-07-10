@@ -1,12 +1,12 @@
 #!/bin/bash
 
-if [ ! -d "/var/www/microting/eform-angular-itemsplanning-plugin" ]; then
+if [ ! -d "/var/www/microting/eform-angular-appointment-plugin" ]; then
   cd /var/www/microting
   su ubuntu -c \
-  "git clone https://github.com/microting/eform-angular-itemsplanning-plugin.git -b stable"
+  "git clone https://github.com/microting/eform-angular-appointment-plugin.git -b stable"
 fi
 
-cd /var/www/microting/eform-angular-itemsplanning-plugin
+cd /var/www/microting/eform-angular-appointment-plugin
 su ubuntu -c \
 "dotnet restore eFormAPI/Plugins/Appointment.Pn/Appointment.Pn.sln"
 
@@ -23,7 +23,7 @@ if [ -d "/var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/
 fi
 
 su ubuntu -c \
-"cp -av /var/www/microting/eform-angular-itemsplanning-plugin/eform-client/src/app/plugins/modules/appointment-pn /var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/appointment-pn"
+"cp -av /var/www/microting/eform-angular-appointment-plugin/eform-client/src/app/plugins/modules/appointment-pn /var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/appointment-pn"
 su ubuntu -c \
 "mkdir -p /var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/"
 
@@ -33,13 +33,13 @@ if [ -d "/var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plu
 fi
 
 su ubuntu -c \
-"cp -av /var/www/microting/eform-angular-itemsplanning-plugin/eFormAPI/Plugins/Appointment.Pn/Appointment.Pn/out /var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/TrashInspection"
+"cp -av /var/www/microting/eform-angular-appointment-plugin/eFormAPI/Plugins/Appointment.Pn/Appointment.Pn/out /var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/TrashInspection"
 
 
 echo "Recompile angular"
 cd /var/www/microting/eform-angular-frontend/eform-client
 su ubuntu -c \
-"/var/www/microting/eform-angular-itemsplanning-plugin/testinginstallpn.sh"
+"/var/www/microting/eform-angular-appointment-plugin/testinginstallpn.sh"
 su ubuntu -c \
 "npm run build"
 echo "Recompiling angular done"
