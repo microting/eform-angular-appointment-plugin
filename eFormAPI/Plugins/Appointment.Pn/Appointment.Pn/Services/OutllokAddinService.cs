@@ -1,12 +1,10 @@
-using System;
 using System.Linq;
 using System.Xml.Linq;
 using Appointment.Pn.Abstractions;
-using eFormShared;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microting.AppointmentBase.Infrastructure.Data;
+using Microting.eForm.Dto;
 using Microting.eFormApi.BasePn.Abstractions;
 
 namespace Appointment.Pn.Services

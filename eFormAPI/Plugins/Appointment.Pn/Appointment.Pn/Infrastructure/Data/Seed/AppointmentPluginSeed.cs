@@ -27,7 +27,7 @@ using Microting.AppointmentBase.Infrastructure.Data;
 using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
 using System;
 using System.Linq;
-using eFormShared;
+using Microting.eForm.Infrastructure.Constants;
 
 namespace Appointment.Pn.Infrastructure.Data.Seed
 {
