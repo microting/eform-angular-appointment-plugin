@@ -20,20 +20,10 @@ export class AppointmentViewComponent implements OnInit {
   ngOnInit() {
   }
 
-  show(model?: AppointmentModel) {
-    if (model) {
-      this.spinnerStatus = true;
-      this.appointmentPnCalendarService.getAppointment(model.id).subscribe((data) => {
-        if (data && data.success) {
-          this.selectedModel = data.model;
-          this.selectedModel.startAt = moment(this.selectedModel.startAt);
-          this.selectedModel.expireAt = moment(this.selectedModel.expireAt);
-        }
-        this.frame.show();
-        this.spinnerStatus = false;
-      });
-    } else {
-      this.frame.show();
-    }
+  show(model: AppointmentModel) {
+    this.selectedModel = model;
+    this.selectedModel.startAt = moment(this.selectedModel.startAt);
+    this.selectedModel.expireAt = moment(this.selectedModel.expireAt);
+    this.frame.show();
   }
 }

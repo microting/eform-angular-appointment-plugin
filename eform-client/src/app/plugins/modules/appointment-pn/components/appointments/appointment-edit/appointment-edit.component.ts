@@ -20,21 +20,14 @@ export class AppointmentEditComponent implements OnInit {
   ngOnInit() {
   }
 
-  show(id?: number) {
-    if (id) {
-      this.spinnerStatus = true;
-      this.appointmentPnCalendarService.getAppointment(id).subscribe((data) => {
-        if (data && data.success) {
-          this.selectedModel = data.model;
-          this.selectedModel.startAt = moment(this.selectedModel.startAt);
-          this.selectedModel.expireAt = moment(this.selectedModel.expireAt);
-        }
-        this.frame.show();
-        this.spinnerStatus = false;
-      });
-    } else {
-      this.frame.show();
+  show(model?: AppointmentModel) {
+    if (model) {
+      this.selectedModel = model;
+      this.selectedModel.startAt = moment(this.selectedModel.startAt);
+      this.selectedModel.expireAt = moment(this.selectedModel.expireAt);
     }
+
+    this.frame.show();
   }
 
   saveAppointment() {

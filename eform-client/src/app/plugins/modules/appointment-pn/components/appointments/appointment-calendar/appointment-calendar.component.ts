@@ -103,6 +103,7 @@ export class AppointmentCalendarComponent implements OnInit {
   }
 
   showEditAppointmentModal(appointmentModel?: AppointmentModel): void {
+    debugger;
     this.editAppointmentModal.show(appointmentModel);
   }
 
