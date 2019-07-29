@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
 using Appointment.Pn.Abstractions;
 using Appointment.Pn.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -40,5 +36,3 @@ namespace Appointment.Pn.Controllers
         
     }
 }
-
-// xmlns="" xmlns:xsi="" xmlns:bt="" xmlns:mailappor="" xsi:="MailApp"
