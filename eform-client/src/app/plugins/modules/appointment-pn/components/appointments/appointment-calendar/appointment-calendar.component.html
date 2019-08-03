@@ -21,25 +21,25 @@
                 mwlCalendarPreviousView
                 [view]="view"
                 [(viewDate)]="viewDate"
-                (viewDateChange)="closeOpenMonthViewDay()"
+                (viewDateChange)="viewDateChange($event)"
               >
-                Previous
+                {{ 'Previous' | translate }}
               </div>
               <div
                 class="btn btn-primary"
                 mwlCalendarToday
                 [(viewDate)]="viewDate"
               >
-                Today
+                {{ 'Today' | translate }}
               </div>
               <div
                 class="btn btn-primary"
                 mwlCalendarNextView
                 [view]="view"
                 [(viewDate)]="viewDate"
-                (viewDateChange)="closeOpenMonthViewDay()"
+                (viewDateChange)="viewDateChange($event)"
               >
-                Next
+                {{ 'Next' | translate }}
               </div>
             </div>
           </div>
@@ -53,21 +53,21 @@
                 (click)="setView(CalendarView.Month)"
                 [class.active]="view === CalendarView.Month"
               >
-                Month
+                {{ 'Month' | translate }}
               </div>
               <div
                 class="btn btn-primary"
                 (click)="setView(CalendarView.Week)"
                 [class.active]="view === CalendarView.Week"
               >
-                Week
+                {{ 'Week' | translate }}
               </div>
               <div
                 class="btn btn-primary"
                 (click)="setView(CalendarView.Day)"
                 [class.active]="view === CalendarView.Day"
               >
-                Day
+                {{ 'Day' | translate }}
               </div>
             </div>
           </div>
@@ -76,6 +76,7 @@
         <div [ngSwitch]="view">
           <mwl-calendar-month-view
             *ngSwitchCase="CalendarView.Month"
+            [weekStartsOn]="1"
             [viewDate]="viewDate"
             [events]="events"
             [refresh]="refresh"
@@ -83,15 +84,17 @@
             (dayClicked)="dayClicked($event.day)"
             (eventClicked)="viewEvent($event.event)"
             (eventTimesChanged)="eventTimesChanged($event)"
+            (beforeViewRender)="beforeViewRender($event)"
           >
           </mwl-calendar-month-view>
           <mwl-calendar-week-view
             *ngSwitchCase="CalendarView.Week"
+            [weekStartsOn]="1"
             [viewDate]="viewDate"
             [events]="events"
-            [refresh]="refresh"
             (eventClicked)="viewEvent($event.event)"
             (eventTimesChanged)="eventTimesChanged($event)"
+            (beforeViewRender)="beforeViewRender($event)"
           >
           </mwl-calendar-week-view>
           <mwl-calendar-day-view
@@ -101,6 +104,7 @@
             [refresh]="refresh"
             (eventClicked)="viewEvent($event.event)"
             (eventTimesChanged)="eventTimesChanged($event)"
+            (beforeViewRender)="beforeViewRender($event)"
           >
           </mwl-calendar-day-view>
         </div>
@@ -109,8 +113,6 @@
     </div>
   </div>
 </div>
-
-<spinner-pn [spinnerVisibility]="spinnerStatus"></spinner-pn>
 
 <app-appointment-edit #editAppointmentModal (appointmentSaved)="getAppointmentsList()"></app-appointment-edit>
 

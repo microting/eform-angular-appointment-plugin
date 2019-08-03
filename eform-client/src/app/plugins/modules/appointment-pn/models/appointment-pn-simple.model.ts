@@ -10,6 +10,9 @@ export class AppointmentSimpleModel {
   startAt: Moment;
   expireAt: Moment | null;
   title: string;
-  description: string;
-  info: string;
+  colorHex: string;
+  repeatEvery: number;
+  repeatType: number;
+  repeatUntil: Moment;
+  nextId: number;
 }

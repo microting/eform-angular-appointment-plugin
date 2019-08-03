@@ -19,9 +19,9 @@ namespace Appointment.Pn.Controllers
 
         [HttpGet]
         [Route("api/appointment-pn/appointments")]
-        public async Task<OperationDataResult<AppointmentsListModel>> GetAppointmentsList()
+        public async Task<OperationDataResult<AppointmentsListModel>> GetAppointmentsList(AppointmentRequestModel requestModel)
         {
-            return await _appointmentsService.GetAppointmentsList();
+            return await _appointmentsService.GetAppointmentsList(requestModel);
         }
 
         [HttpGet]

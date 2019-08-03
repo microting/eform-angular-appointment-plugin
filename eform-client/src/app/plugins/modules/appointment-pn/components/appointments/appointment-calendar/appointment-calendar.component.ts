@@ -1,10 +1,12 @@
-import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
-import {CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView, CalendarEvent} from 'angular-calendar';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {CalendarEvent, CalendarEventAction, CalendarEventTimesChangedEvent, CalendarView} from 'angular-calendar';
 import {isSameDay, isSameMonth} from 'date-fns';
 import {Subject} from 'rxjs';
-import {AppointmentModel, AppointmentsListModel} from '../../../models';
+import {AppointmentModel, AppointmentSimpleModel, RepeatType} from '../../../models';
 import {AppointmentPnCalendarService} from '../../../services';
 import * as moment from 'moment';
+import {AppointmentRequestModel} from '../../../models/appointment-pn-request.model';
+import {ViewPeriod} from 'calendar-utils';
 
 @Component({
   selector: 'app-appointment-calendar',
@@ -15,19 +17,18 @@ export class AppointmentCalendarComponent implements OnInit {
   @ViewChild('editAppointmentModal') editAppointmentModal;
   @ViewChild('viewAppointmentModal') viewAppointmentModal;
   @ViewChild('deleteAppointmentModal') deleteAppointmentModal;
-  spinnerStatus = false;
-  view: CalendarView = CalendarView.Month;
+  view: CalendarView;
   CalendarView = CalendarView;
   viewDate: Date = new Date();
   actions: CalendarEventAction[] = [
     {
-      label: '<span class="mx-1 text-success">Edit</span>',
+      label: '<div class="btn btn-sm btn-success p-1">Edit</div>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.editEvent(event);
       }
     },
     {
-      label: '<span class="mx-1 text-danger">Delete</span>',
+      label: '<div class="btn btn-sm btn-danger p-1">Delete</div>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.deleteEvent(event);
       }
@@ -35,50 +36,70 @@ export class AppointmentCalendarComponent implements OnInit {
   ];
   refresh: Subject<any> = new Subject();
   events: CalendarEvent[] = [];
-  activeDayIsOpen = true;
-  appointmentsListModel: AppointmentsListModel;
+  activeDayIsOpen = false;
+  period: ViewPeriod;
 
   constructor(
     private appointmentPnCalendarService: AppointmentPnCalendarService
   ) {}
 
   ngOnInit(): void {
-    this.getAppointmentsList();
+    this.view = CalendarView.Month;
+  }
+
+  beforeViewRender(renderEvent) {
+    this.period = renderEvent.period;
+
+    if (this.events.length === 0) {
+      this.getAppointmentsList();
+    }
   }
 
   getAppointmentsList() {
-    this.spinnerStatus = true;
-    this.events = [];
-    this.appointmentPnCalendarService.getAppointmentsList().subscribe((data) => {
-      if (data && data.success) {
-        this.appointmentsListModel = data.model;
-        for (const a of this.appointmentsListModel.appointments) {
-          a.startAt = moment(a.startAt);
-          a.expireAt = moment(a.expireAt);
+    const request: AppointmentRequestModel = {
+      startDate: this.period.start.toISOString(),
+      endDate: this.period.end.toISOString()
+    };
 
-          this.events = [
-            ...this.events,
-            {
+    this.appointmentPnCalendarService.getAppointmentsList(request).subscribe((data) => {
+      if (data && data.success) {
+        const listModel = data.model;
+
+        if (listModel.total > 0) {
+          this.events = [];
+
+          for (const a of listModel.appointments) {
+            a.startAt = moment(a.startAt);
+            a.expireAt = moment(a.expireAt);
+            a.repeatUntil = a.repeatUntil ? moment(a.repeatUntil) : null;
+
+            const event = {
               id: a.id,
               start: a.startAt.toDate(),
               end: a.expireAt.toDate(),
               title: a.title,
               color: {
-                primary: '#1e90ff',
-                secondary: '#D1E8FF'
+                primary: a.colorHex,
+                secondary: a.colorHex
               },
-              actions: this.actions,
-              allDay: true,
+              actions: a.startAt > moment() ? this.actions : [],
               resizable: {
                 beforeStart: true,
                 afterEnd: true
               },
-              draggable: false
+              draggable: a.startAt > moment() && a.expireAt.diff(a.startAt, 'h') < 24
+            };
+
+            if (a.repeatType && !a.nextId) {
+              // this will create copies of the repeatable event
+              this.addRecurringAppointment(event, a);
+            } else {
+              // event is not repeatable, so add it only once
+              this.events = [...this.events, event];
             }
-          ];
+          }
         }
       }
-      this.spinnerStatus = false;
     });
   }
 
@@ -90,20 +111,39 @@ export class AppointmentCalendarComponent implements OnInit {
   }
 
   eventTimesChanged({event, newStart, newEnd}: CalendarEventTimesChangedEvent): void {
-    // this.events = this.events.map(iEvent => {
-    //   if (iEvent === event) {
-    //     return {
-    //       ...event,
-    //       start: newStart,
-    //       end: newEnd
-    //     };
-    //   }
-    //   return iEvent;
-    // });
+    // do nothing if dragging occurred, but date doesn't change
+    if (event.start.getTime() === newStart.getTime() && event.end.getTime() === newEnd.getTime()) {
+      return;
+    }
+
+    // calculate differences between previous and new event start and end dates, these are needed to update appointment dates
+    const startDiff = newStart.getTime() - event.start.getTime();
+    const endDiff = newEnd.getTime() - event.end.getTime();
+
+    // just update for calendar view to put event label to place where it was dragged
+    event.start = newStart;
+    event.end = newEnd;
+    this.refresh.next();
+
+    // request the exact appointment object by Id from event to get the original dates
+    this.appointmentPnCalendarService.getAppointment(event.id).subscribe((data) => {
+      if (data && data.success) {
+        const appointmentModel = data.model;
+
+        // modify original dates using differences calculated previously
+        appointmentModel.startAt = moment(appointmentModel.startAt).add(startDiff, 'ms').utcOffset(0, true);
+        appointmentModel.expireAt = moment(appointmentModel.expireAt).add(endDiff, 'ms').utcOffset(0, true);
+
+        // send modified appointment model to server and retrieve list despite the result of request
+        this.appointmentPnCalendarService.updateAppointment(appointmentModel)
+          .subscribe(() => {
+            this.getAppointmentsList();
+          });
+      }
+    });
   }
 
   showEditAppointmentModal(appointmentModel?: AppointmentModel): void {
-    debugger;
     this.editAppointmentModal.show(appointmentModel);
   }
 
@@ -133,9 +173,69 @@ export class AppointmentCalendarComponent implements OnInit {
 
   setView(view: CalendarView) {
     this.view = view;
+    this.updatePeriod(this.viewDate);
   }
 
-  closeOpenMonthViewDay() {
+  viewDateChange(event) {
+    this.updatePeriod(event);
     this.activeDayIsOpen = false;
+  }
+
+  updatePeriod(date: Date) {
+    // calculate the period of currently displayed calendar view and date
+    const d = moment(date);
+    switch (this.view) {
+      case CalendarView.Month:
+        this.period.start = d.startOf('month').toDate();
+        this.period.end = d.endOf('month').toDate();
+        break;
+      case CalendarView.Week:
+        this.period.start = d.startOf('isoWeek').toDate();
+        this.period.end = d.endOf('isoWeek').toDate();
+        break;
+      case CalendarView.Day:
+        this.period.start = d.startOf('day').toDate();
+        this.period.end = d.endOf('day').toDate();
+        break;
+    }
+
+    this.getAppointmentsList();
+  }
+
+  addRecurringAppointment(event: CalendarEvent, appointment: AppointmentSimpleModel) {
+    // choose the correct unit according to type of recurring event
+    let unit;
+    switch (appointment.repeatType) {
+      case RepeatType.Month:
+        unit = 'M';
+        break;
+      case RepeatType.Week:
+        unit = 'w';
+        break;
+      case RepeatType.Day:
+        unit = 'd';
+        break;
+      default:
+    }
+
+    // duplicate events until the end of currently displayed period or events repeatUntil value
+    while (event.start <= this.period.end && (!appointment.repeatUntil || event.start <= appointment.repeatUntil.toDate())) {
+      this.events = [...this.events, event];
+
+      // make a copy because we don't want to modify previous event
+      event = Object.assign({}, event);
+      const now = new Date();
+
+      // calculate dates for the next copy of event
+      event.start = moment(event.start).add(appointment.repeatEvery, unit).toDate();
+      event.end = moment(event.end).add(appointment.repeatEvery, unit).toDate();
+      // next properties are applying only for future events, so perform additional checks
+      event.actions = event.start > now ? this.actions : [];
+      event.draggable = event.start > now;
+      event.resizable = {
+        beforeStart: event.start > now,
+        afterEnd: event.start > now
+      };
+    }
   }
 }

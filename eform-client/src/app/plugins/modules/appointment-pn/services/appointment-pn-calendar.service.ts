@@ -6,6 +6,7 @@ import {ToastrService} from 'ngx-toastr';
 import {Observable} from 'rxjs';
 import {OperationDataResult, OperationResult} from '../../../../common/models';
 import {AppointmentModel, AppointmentsListModel} from '../models';
+import {AppointmentRequestModel} from '../models/appointment-pn-request.model';
 
 export let AppointmentCalendarMethods = {
   AppointmentCalendar: 'api/appointment-pn/appointments'
@@ -16,8 +17,8 @@ export class AppointmentPnCalendarService extends BaseService {
     super(_http, router, toastrService);
   }
 
-  getAppointmentsList(): Observable<OperationDataResult<AppointmentsListModel>> {
-    return this.get(AppointmentCalendarMethods.AppointmentCalendar);
+  getAppointmentsList(model: AppointmentRequestModel): Observable<OperationDataResult<AppointmentsListModel>> {
+    return this.get(AppointmentCalendarMethods.AppointmentCalendar, model);
   }
 
   getAppointment(id: number | string): Observable<OperationDataResult<AppointmentModel>> {

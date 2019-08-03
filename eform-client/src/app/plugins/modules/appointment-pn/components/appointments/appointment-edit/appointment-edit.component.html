@@ -7,7 +7,7 @@
       <div class="modal-body">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-6 col-sm-8 col-xs-12">
+            <div class="col-xl-8 col-lg-10 col-md-12">
               <div class="md-form">
                 <input mdbInputDirective
                        [mdbValidate]="false"
@@ -19,7 +19,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-3 col-sm-4 col-xs-6">
+            <div class="col-xl-4 col-lg-5 col-md-6">
               <div class="md-form" [owlDateTimeTrigger]="dt1">
                 <input mdbInputDirective
                        [owlDateTime]="dt1"
@@ -27,11 +27,11 @@
                        [(ngModel)]="selectedModel.startAt"
                        type="text" id="startAt"
                        name="startAt" class="form-control">
-                <owl-date-time [pickerType]="'calendar'" #dt1></owl-date-time>
+                <owl-date-time [pickerType]="'both'" #dt1></owl-date-time>
                 <label for="startAt">{{'Start at' | translate}}</label>
               </div>
             </div>
-            <div class="col-md-3 col-sm-4 col-xs-6">
+            <div class="col-xl-4 col-lg-5 col-md-6">
               <div class="md-form" [owlDateTimeTrigger]="dt2">
                 <input mdbInputDirective
                        [owlDateTime]="dt2"
@@ -39,13 +39,50 @@
                        [(ngModel)]="selectedModel.expireAt"
                        type="text" id="expireAt"
                        name="expireAt" class="form-control">
-                <owl-date-time [pickerType]="'calendar'" #dt2></owl-date-time>
-                <label for="expireAt">{{'Expire at' | translate}}</label>
+                <owl-date-time [pickerType]="'both'" [firstDayOfWeek]="0" #dt2></owl-date-time>
+                <label for="expireAt">{{'End at' | translate}}</label>
               </div>
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-sm-8 col-xs-12">
+            <div class="col-xl-2 col-lg-3 col-md-4">
+              <div class="md-form">
+                <input mdbInputDirective
+                       [mdbValidate]="false"
+                       [(ngModel)]="selectedModel.repeatEvery"
+                       type="text" id="createRepeatEvery"
+                       name="createRepeatEvery" class="form-control">
+                <label for="createRepeatEvery">{{'Repeat every' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-xl-3 col-lg-3 col-md-4 ng-select-wrapper">
+              <ng-select [items]="[
+                  {id: 1, name: 'Day' | translate},
+                  {id: 2, name: 'Week' | translate},
+                  {id: 3, name: 'Month' | translate}
+                  ]"
+                         bindLabel="name"
+                         [placeholder]="('Repeat type' | translate)"
+                         bindValue="id"
+                         [(ngModel)]="selectedModel.repeatType"
+                         id="createRepeatType">
+              </ng-select>
+            </div>
+            <div class="col-xl-3 col-lg-4 col-md-4">
+              <div class="md-form" [owlDateTimeTrigger]="dt3">
+                <input mdbInputDirective
+                       [owlDateTime]="dt3"
+                       [mdbValidate]="false"
+                       [(ngModel)]="selectedModel.repeatUntil"
+                       type="text" id="createRepeatUntil"
+                       name="createRepeatUntil" class="form-control">
+                <owl-date-time [pickerType]="'both'" [firstDayOfWeek]="0" #dt3></owl-date-time>
+                <label for="createRepeatUntil">{{'Repeat until' | translate}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-8 col-lg-10 col-md-12">
               <div class="md-form">
                 <textarea mdbInputDirective
                           [mdbValidate]="false"
@@ -57,7 +94,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-md-6 col-sm-8 col-xs-12">
+            <div class="col-xl-8 col-lg-10 col-md-12">
               <div class="md-form">
                 <textarea mdbInputDirective
                           [mdbValidate]="false"
@@ -65,6 +102,27 @@
                           type="text" id="info"
                           name="info" class="md-textarea form-control"></textarea>
                 <label for="info">{{'Info' | translate}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xl-6 col-lg-7 col-md-8">
+              <div class="md-form">
+                <input mdbInputDirective
+                       [mdbValidate]="false"
+                       [(ngModel)]="selectedModel.colorHex"
+                       type="text" id="colorHex"
+                       name="colorHex" class="form-control">
+                <label for="colorHex">{{'Color' | translate}}</label>
+              </div>
+            </div>
+            <div class="col-xl-2 col-lg-3 col-md-4">
+              <div class="py-4">
+                <input mdbInputDirective
+                       [mdbValidate]="false"
+                       [(ngModel)]="selectedModel.colorHex"
+                       type="color" id="colorPicker" style="min-height: 40px"
+                       name="colorPicker" class="form-control">
               </div>
             </div>
           </div>
