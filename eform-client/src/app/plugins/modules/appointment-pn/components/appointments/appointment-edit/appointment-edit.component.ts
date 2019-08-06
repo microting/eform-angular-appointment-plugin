@@ -2,6 +2,7 @@ import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core'
 import {AppointmentModel} from '../../../models';
 import {AppointmentPnCalendarService} from '../../../services';
 import * as moment from 'moment';
+import {DateTimeAdapter} from 'ng-pick-datetime';
 
 @Component({
   selector: 'app-appointment-edit',
@@ -14,7 +15,11 @@ export class AppointmentEditComponent implements OnInit {
   spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();
 
-  constructor(private appointmentPnCalendarService: AppointmentPnCalendarService) {
+  constructor(
+    private appointmentPnCalendarService: AppointmentPnCalendarService,
+    private dateTimeAdapter: DateTimeAdapter<any>
+  ) {
+    dateTimeAdapter.setLocale(localStorage.getItem('locale'));
   }
 
   ngOnInit() {

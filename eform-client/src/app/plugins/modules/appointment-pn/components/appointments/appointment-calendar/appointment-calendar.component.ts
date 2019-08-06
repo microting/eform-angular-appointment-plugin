@@ -38,12 +38,14 @@ export class AppointmentCalendarComponent implements OnInit {
   events: CalendarEvent[] = [];
   activeDayIsOpen = false;
   period: ViewPeriod;
+  locale: string;
 
   constructor(
     private appointmentPnCalendarService: AppointmentPnCalendarService
   ) {}
 
   ngOnInit(): void {
+    this.locale = localStorage.getItem('locale');
     this.view = CalendarView.Month;
   }
 
