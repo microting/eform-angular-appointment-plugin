@@ -68,7 +68,7 @@ namespace Appointment.Pn
         {
             services.AddSingleton<IAppointmentLocalizationService, AppointmentLocalizationService>();
             services.AddTransient<IAppointmentPnSettingsService, AppointmentPnSettingsService>();
-            services.AddTransient<IOutlookAddinService, OutllokAddinService>();
+            services.AddTransient<IAppointmentsService, AppointmentsService>();
         }
 
         public void ConfigureOptionsServices(IServiceCollection services, IConfiguration configuration)
@@ -122,10 +122,17 @@ namespace Appointment.Pn
                 {
                     new MenuItemModel()
                     {
+                        Name = localizationService.GetString("Calendar"),
+                        E2EId = "appointment-pn-calendar",
+                        Link = "/plugins/appointment-pn/calendar",
+                        Position = 0,
+                    },
+                    new MenuItemModel()
+                    {
                         Name = localizationService.GetString("Settings"),
                         E2EId = "appointment-pn-settings",
                         Link = "/plugins/appointment-pn/settings",
-                        Position = 0,
+                        Position = 1,
                     }
                 }
             });
