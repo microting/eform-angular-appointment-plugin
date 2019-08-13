@@ -25,6 +25,11 @@ export class AppointmentEditComponent implements OnInit {
   ngOnInit() {
   }
 
+  onClose() {
+    this.selectedModel = new AppointmentModel();
+    this.frame.hide();
+  }
+
   show(model?: AppointmentModel) {
     this.selectedModel.colorHex = '#' + Math.floor(Math.random() * 16777215).toString(16);
     if (model) {
@@ -37,6 +42,10 @@ export class AppointmentEditComponent implements OnInit {
   }
 
   saveAppointment() {
+    if (!this.selectedModel.title || !this.selectedModel.startAt || !this.selectedModel.expireAt) {
+      return;
+    }
+
     this.spinnerStatus = true;
     this.selectedModel.startAt.utcOffset(0, true);
 

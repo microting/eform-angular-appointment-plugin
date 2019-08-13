@@ -22,13 +22,13 @@ export class AppointmentCalendarComponent implements OnInit {
   viewDate: Date = new Date();
   actions: CalendarEventAction[] = [
     {
-      label: '<div class="btn btn-sm btn-success p-1">Edit</div>',
+      label: '<i class="fa fa-fw fa-pencil text-success"></i>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.editEvent(event);
       }
     },
     {
-      label: '<div class="btn btn-sm btn-danger p-1">Delete</div>',
+      label: '<i class="fa fa-fw fa-times text-danger"></i>',
       onClick: ({ event }: { event: CalendarEvent }): void => {
         this.deleteEvent(event);
       }
