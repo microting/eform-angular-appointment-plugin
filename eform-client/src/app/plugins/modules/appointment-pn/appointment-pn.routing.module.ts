@@ -2,7 +2,7 @@ import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AppointmentPnLayoutComponent} from './layouts';
 import {AdminGuard} from '../../../common/guards';
-import {AppointmentSettingsComponent} from './components';
+import {AppointmentCalendarComponent, AppointmentSettingsComponent} from './components';
 
 export const routes: Routes = [
   {
@@ -13,6 +13,11 @@ export const routes: Routes = [
         path: 'settings',
         canActivate: [AdminGuard],
         component: AppointmentSettingsComponent
+      },
+      {
+        path: 'calendar',
+        canActivate: [AdminGuard],
+        component: AppointmentCalendarComponent
       }
     ]
   }
