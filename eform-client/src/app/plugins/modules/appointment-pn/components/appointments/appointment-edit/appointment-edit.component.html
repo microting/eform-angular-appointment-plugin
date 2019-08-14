@@ -4,137 +4,138 @@
       <div class="modal-header">
         <h3>{{ (selectedModel.id ? 'Edit appointment' : 'Create appointment') | translate }}</h3>
       </div>
-      <div class="modal-body">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-xl-8 col-lg-10 col-md-12">
-              <div class="md-form">
-                <input mdbInputDirective
-                       [mdbValidate]="false"
-                       [(ngModel)]="selectedModel.title"
-                       type="text" id="title"
-                       name="title" class="form-control">
-                <label for="title">{{'Title' | translate}}</label>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-xl-8 col-lg-10 col-md-12">
+                <div class="md-form">
+                  <input mdbInputDirective
+                         [mdbValidate]="false"
+                         [(ngModel)]="selectedModel.title"
+                         type="text" id="title"
+                         name="title" class="form-control" required>
+                  <label for="title">{{'Title' | translate}}*</label>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-xl-4 col-lg-5 col-md-6">
-              <div class="md-form" [owlDateTimeTrigger]="dt1">
-                <input mdbInputDirective
-                       [owlDateTime]="dt1"
-                       [mdbValidate]="false"
-                       [(ngModel)]="selectedModel.startAt"
-                       type="text" id="startAt"
-                       name="startAt" class="form-control">
-                <owl-date-time [pickerType]="'both'" #dt1></owl-date-time>
-                <label for="startAt">{{'Start at' | translate}}</label>
+            <div class="row">
+              <div class="col-xl-4 col-lg-5 col-md-6">
+                <div class="md-form" [owlDateTimeTrigger]="dt1">
+                  <input mdbInputDirective
+                         [owlDateTime]="dt1"
+                         [mdbValidate]="false"
+                         [(ngModel)]="selectedModel.startAt"
+                         type="text" id="startAt"
+                         name="startAt" class="form-control" required>
+                  <owl-date-time [pickerType]="'both'" #dt1></owl-date-time>
+                  <label for="startAt">{{'Start at' | translate}}*</label>
+                </div>
+              </div>
+              <div class="col-xl-4 col-lg-5 col-md-6">
+                <div class="md-form" [owlDateTimeTrigger]="dt2">
+                  <input mdbInputDirective
+                         [owlDateTime]="dt2"
+                         [mdbValidate]="false"
+                         [(ngModel)]="selectedModel.expireAt"
+                         type="text" id="expireAt"
+                         name="expireAt" class="form-control" required>
+                  <owl-date-time [pickerType]="'both'" [firstDayOfWeek]="1" #dt2></owl-date-time>
+                  <label for="expireAt">{{'End at' | translate}}*</label>
+                </div>
               </div>
             </div>
-            <div class="col-xl-4 col-lg-5 col-md-6">
-              <div class="md-form" [owlDateTimeTrigger]="dt2">
-                <input mdbInputDirective
-                       [owlDateTime]="dt2"
-                       [mdbValidate]="false"
-                       [(ngModel)]="selectedModel.expireAt"
-                       type="text" id="expireAt"
-                       name="expireAt" class="form-control">
-                <owl-date-time [pickerType]="'both'" [firstDayOfWeek]="0" #dt2></owl-date-time>
-                <label for="expireAt">{{'End at' | translate}}</label>
+            <div class="row">
+              <div class="col-xl-2 col-lg-3 col-md-4">
+                <div class="md-form">
+                  <input mdbInputDirective
+                         [mdbValidate]="false"
+                         [(ngModel)]="selectedModel.repeatEvery"
+                         type="text" id="createRepeatEvery"
+                         name="createRepeatEvery" class="form-control">
+                  <label for="createRepeatEvery">{{'Repeat every' | translate}}</label>
+                </div>
+              </div>
+              <div class="col-xl-3 col-lg-3 col-md-4 ng-select-wrapper">
+                <ng-select [items]="[
+                    {id: 1, name: 'Day' | translate},
+                    {id: 2, name: 'Week' | translate},
+                    {id: 3, name: 'Month' | translate}
+                    ]"
+                           bindLabel="name"
+                           [placeholder]="('Repeat type' | translate)"
+                           bindValue="id"
+                           [(ngModel)]="selectedModel.repeatType"
+                           id="createRepeatType">
+                </ng-select>
+              </div>
+              <div class="col-xl-3 col-lg-4 col-md-4">
+                <div class="md-form" [owlDateTimeTrigger]="dt3">
+                  <input mdbInputDirective
+                         [owlDateTime]="dt3"
+                         [mdbValidate]="false"
+                         [(ngModel)]="selectedModel.repeatUntil"
+                         type="text" id="createRepeatUntil"
+                         name="createRepeatUntil" class="form-control">
+                  <owl-date-time [pickerType]="'both'" [firstDayOfWeek]="1" #dt3></owl-date-time>
+                  <label for="createRepeatUntil">{{'Repeat until' | translate}}</label>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-xl-2 col-lg-3 col-md-4">
-              <div class="md-form">
-                <input mdbInputDirective
-                       [mdbValidate]="false"
-                       [(ngModel)]="selectedModel.repeatEvery"
-                       type="text" id="createRepeatEvery"
-                       name="createRepeatEvery" class="form-control">
-                <label for="createRepeatEvery">{{'Repeat every' | translate}}</label>
+            <div class="row">
+              <div class="col-xl-8 col-lg-10 col-md-12">
+                <div class="md-form">
+                  <textarea mdbInputDirective
+                            [mdbValidate]="false"
+                            [(ngModel)]="selectedModel.description"
+                            type="text" id="description"
+                            name="description" class="md-textarea form-control"></textarea>
+                  <label for="description">{{'Description' | translate}}</label>
+                </div>
               </div>
             </div>
-            <div class="col-xl-3 col-lg-3 col-md-4 ng-select-wrapper">
-              <ng-select [items]="[
-                  {id: 1, name: 'Day' | translate},
-                  {id: 2, name: 'Week' | translate},
-                  {id: 3, name: 'Month' | translate}
-                  ]"
-                         bindLabel="name"
-                         [placeholder]="('Repeat type' | translate)"
-                         bindValue="id"
-                         [(ngModel)]="selectedModel.repeatType"
-                         id="createRepeatType">
-              </ng-select>
-            </div>
-            <div class="col-xl-3 col-lg-4 col-md-4">
-              <div class="md-form" [owlDateTimeTrigger]="dt3">
-                <input mdbInputDirective
-                       [owlDateTime]="dt3"
-                       [mdbValidate]="false"
-                       [(ngModel)]="selectedModel.repeatUntil"
-                       type="text" id="createRepeatUntil"
-                       name="createRepeatUntil" class="form-control">
-                <owl-date-time [pickerType]="'both'" [firstDayOfWeek]="0" #dt3></owl-date-time>
-                <label for="createRepeatUntil">{{'Repeat until' | translate}}</label>
+            <div class="row">
+              <div class="col-xl-8 col-lg-10 col-md-12">
+                <div class="md-form">
+                  <textarea mdbInputDirective
+                            [mdbValidate]="false"
+                            [(ngModel)]="selectedModel.info"
+                            type="text" id="info"
+                            name="info" class="md-textarea form-control"></textarea>
+                  <label for="info">{{'Info' | translate}}</label>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-xl-8 col-lg-10 col-md-12">
-              <div class="md-form">
-                <textarea mdbInputDirective
-                          [mdbValidate]="false"
-                          [(ngModel)]="selectedModel.description"
-                          type="text" id="description"
-                          name="description" class="md-textarea form-control"></textarea>
-                <label for="description">{{'Description' | translate}}</label>
+            <div class="row">
+              <div class="col-xl-6 col-lg-7 col-md-8">
+                <div class="md-form">
+                  <input mdbInputDirective
+                         [mdbValidate]="false"
+                         [(ngModel)]="selectedModel.colorHex"
+                         type="text" id="colorHex"
+                         name="colorHex" class="form-control" required>
+                  <label for="colorHex">{{'Color' | translate}}*</label>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xl-8 col-lg-10 col-md-12">
-              <div class="md-form">
-                <textarea mdbInputDirective
-                          [mdbValidate]="false"
-                          [(ngModel)]="selectedModel.info"
-                          type="text" id="info"
-                          name="info" class="md-textarea form-control"></textarea>
-                <label for="info">{{'Info' | translate}}</label>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xl-6 col-lg-7 col-md-8">
-              <div class="md-form">
-                <input mdbInputDirective
-                       [mdbValidate]="false"
-                       [(ngModel)]="selectedModel.colorHex"
-                       type="text" id="colorHex"
-                       name="colorHex" class="form-control">
-                <label for="colorHex">{{'Color' | translate}}</label>
-              </div>
-            </div>
-            <div class="col-xl-2 col-lg-3 col-md-4">
-              <div class="py-4">
-                <input mdbInputDirective
-                       [mdbValidate]="false"
-                       [(ngModel)]="selectedModel.colorHex"
-                       type="color" id="colorPicker" style="min-height: 40px"
-                       name="colorPicker" class="form-control">
+              <div class="col-xl-2 col-lg-3 col-md-4">
+                <div class="py-4">
+                  <input mdbInputDirective
+                         [(ngModel)]="selectedModel.colorHex"
+                         type="color" id="colorPicker" style="min-height: 40px"
+                         name="colorPicker" class="form-control">
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button id="listEditSaveBtn" class="btn btn-success"
-                [disabled]="!selectedModel.title || !selectedModel.startAt" (click)="saveAppointment()">
-          {{ 'Save' | translate }}
-        </button>
-        <button id="listEditCancelBtn" class="btn btn-accent text-black-50" (click)="frame.hide()">{{'Cancel' | translate}}</button>
-      </div>
+        <div class="modal-footer">
+          <button id="listEditSaveBtn" class="btn btn-success" (click)="saveAppointment()"
+                  [disabled]="!selectedModel.title || !selectedModel.startAt || !selectedModel.expireAt">
+            {{ 'Save' | translate }}
+          </button>
+          <button id="listEditCancelBtn" class="btn btn-accent text-black-50" (click)="onClose()">
+            {{ 'Cancel' | translate }}
+          </button>
+        </div>
     </div>
   </div>
 </div>

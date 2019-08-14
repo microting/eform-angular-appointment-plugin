@@ -120,7 +120,8 @@ namespace Appointment.Pn.Services
             {
                 try
                 {
-                    if (appointmentModel.ExpireAt <= appointmentModel.StartAt || appointmentModel.StartAt <= DateTime.UtcNow)
+                    if (appointmentModel.ExpireAt == null || appointmentModel.StartAt == null || 
+                        appointmentModel.ExpireAt <= appointmentModel.StartAt || appointmentModel.StartAt <= DateTime.UtcNow)
                     {
                         return new OperationResult(
                             false,
@@ -174,11 +175,17 @@ namespace Appointment.Pn.Services
                             _appointmentLocalizationService.GetString("CannotEditAppointment"));
                     }
 
-                    if (appointmentModel.ExpireAt <= appointmentModel.StartAt || appointmentModel.StartAt <= DateTime.UtcNow)
+                    if (appointmentModel.ExpireAt == null || appointmentModel.StartAt == null ||
+                        appointmentModel.ExpireAt <= appointmentModel.StartAt || appointmentModel.StartAt <= DateTime.UtcNow)
                     {
                         return new OperationResult(
                             false,
                             _appointmentLocalizationService.GetString("AppointmentDateNotCorrect"));
+                    }
+
+                    if (appointmentModel.ExpireAt > appointmentModel.RepeatUntil)
+                    {
+                        appointmentModel.RepeatUntil = appointmentModel.ExpireAt;
                     }
 
                     appointment.UpdatedAt = DateTime.UtcNow;
