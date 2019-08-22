@@ -1,8 +1,15 @@
-import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
-import {AppointmentModel} from '../../../models';
+import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {AppointmentFieldModel, AppointmentModel} from '../../../models';
 import {AppointmentPnCalendarService} from '../../../services';
 import * as moment from 'moment';
 import {DateTimeAdapter} from 'ng-pick-datetime';
+import {debounceTime, switchMap} from 'rxjs/operators';
+import {TemplateListModel, TemplateRequestModel} from '../../../../../../common/models/eforms';
+import {EFormService} from '../../../../../../common/services/eform';
+import {FieldValueDto, SiteNameDto, TemplateDto} from '../../../../../../common/models/dto';
+import {SitesService} from '../../../../../../common/services/advanced';
+import {AuthService} from '../../../../../../common/services/auth';
+import {FieldDto} from '../../../../../../common/models/dto/field.dto';
 
 @Component({
   selector: 'app-appointment-edit',
@@ -14,12 +21,34 @@ export class AppointmentEditComponent implements OnInit {
   @Output() appointmentSaved: EventEmitter<void> = new EventEmitter<void>();
   spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();
+  templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
+  templatesModel: TemplateListModel = new TemplateListModel();
+  selectedTemplate: TemplateDto = new TemplateDto();
+  pairingSites: {site: SiteNameDto, deploy: boolean}[] = [];
+  fields: FieldDto[] = [];
+  typeahead = new EventEmitter<string>();
 
   constructor(
     private appointmentPnCalendarService: AppointmentPnCalendarService,
-    private dateTimeAdapter: DateTimeAdapter<any>
+    private eFormService: EFormService,
+    private sitesService: SitesService,
+    private dateTimeAdapter: DateTimeAdapter<any>,
+    private authService: AuthService,
+    private cd: ChangeDetectorRef
   ) {
     dateTimeAdapter.setLocale(localStorage.getItem('locale'));
+    this.typeahead
+      .pipe(
+        debounceTime(200),
+        switchMap(term => {
+          this.templateRequestModel.nameFilter = term;
+          return this.eFormService.getAll(this.templateRequestModel);
+        })
+      )
+      .subscribe(items => {
+        this.templatesModel = items.model;
+        this.cd.markForCheck();
+      });
   }
 
   ngOnInit() {
@@ -30,14 +59,24 @@ export class AppointmentEditComponent implements OnInit {
     this.frame.hide();
   }
 
+  onTemplateChange() {
+    this.updateSelectedTemplate();
+  }
+
   show(model?: AppointmentModel) {
-    this.selectedModel.colorHex = '#' + Math.floor(Math.random() * 16777215).toString(16);
+    this.templatesModel = new TemplateListModel();
+
     if (model) {
       this.selectedModel = model;
       this.selectedModel.startAt = moment(this.selectedModel.startAt);
       this.selectedModel.expireAt = moment(this.selectedModel.expireAt);
+      this.updateSelectedTemplate();
+    } else {
+      this.selectedTemplate = null;
+      this.selectedModel.colorHex = '#' + Math.floor(Math.random() * 16777215).toString(16);
     }
 
+    this.updateSites();
     this.frame.show();
   }
 
@@ -52,6 +91,9 @@ export class AppointmentEditComponent implements OnInit {
     if (this.selectedModel.expireAt) {
       this.selectedModel.expireAt.utcOffset(0, true);
     }
+
+    this.selectedModel.siteUids = this.pairingSites.filter(s => s.deploy).map(s => s.site.siteUId);
+    this.selectedModel.fields = this.fields.map<AppointmentFieldModel>(f => ({fieldId: f.id, fieldValue: f.fieldValues[0].value}));
 
     if (this.selectedModel.id) {
       this.appointmentPnCalendarService.updateAppointment(this.selectedModel)
@@ -73,5 +115,51 @@ export class AppointmentEditComponent implements OnInit {
           this.spinnerStatus = false;
         });
     }
+  }
+
+  updateSites() {
+    if (this.authService.userClaims.eFormsPairingRead) {
+      this.sitesService.getAllSitesForPairing().subscribe(operation => {
+        if (operation && operation.success) {
+          this.pairingSites = operation.model.map(dto => ({site: dto, deploy: this.selectedModel.siteUids.some(s => s === dto.siteUId)}));
+        }
+      });
+    }
+  }
+
+  updateSelectedTemplate() {
+    if (!this.selectedModel.eFormId) {
+      return;
+    }
+
+    this.eFormService.getSingle(this.selectedModel.eFormId).subscribe(operation => {
+      if (operation && operation.success) {
+        this.selectedTemplate = operation.model;
+        this.templatesModel.numOfElements = 1;
+        this.templatesModel.templates = [this.selectedTemplate];
+        this.cd.markForCheck();
+      }
+    });
+
+    this.eFormService.getFields(this.selectedModel.eFormId).subscribe(operation => {
+      if (operation && operation.success) {
+        for (const field of operation.model) {
+          const fieldValue = new FieldValueDto();
+          const appointmentField = this.selectedModel.fields && this.selectedModel.fields.find(x => x.fieldId === field.id);
+
+          if (appointmentField) {
+            fieldValue.value = appointmentField.fieldValue;
+          } else {
+            fieldValue.value = '';
+          }
+
+          fieldValue.keyValuePairList = field.keyValuePairList;
+
+          field.fieldValues = [fieldValue];
+          field.dataItemList = [];
+          this.fields.push(field);
+        }
+      }
+    });
   }
 }

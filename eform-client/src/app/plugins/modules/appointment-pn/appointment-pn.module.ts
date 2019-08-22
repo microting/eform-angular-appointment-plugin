@@ -24,6 +24,8 @@ import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 import {OwlDateTimeModule} from 'ng-pick-datetime';
 import {OwlMomentDateTimeModule} from 'ng-pick-datetime-moment';
 import localeDa from '@angular/common/locales/da';
+import {AppointmentPrefillFieldComponent} from './components/appointments/appointment-prefill-field/appointment-prefill-field.component';
+import {CasesModule} from '../../../modules';
 
 registerLocaleData(localeDa);
 
@@ -43,7 +45,8 @@ registerLocaleData(localeDa);
       useFactory: adapterFactory
     }),
     OwlDateTimeModule,
-    OwlMomentDateTimeModule
+    OwlMomentDateTimeModule,
+    CasesModule
   ],
   declarations: [
     AppointmentPnLayoutComponent,
@@ -51,7 +54,8 @@ registerLocaleData(localeDa);
     AppointmentCalendarComponent,
     AppointmentEditComponent,
     AppointmentViewComponent,
-    AppointmentDeleteComponent
+    AppointmentDeleteComponent,
+    AppointmentPrefillFieldComponent
   ],
   providers: [AppointmentPnSettingsService, AppointmentPnCalendarService]
 })
