@@ -5,7 +5,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Appointment.Pn.Abstractions;
 using Appointment.Pn.Infrastructure.Models;
-using eFormShared;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microting.AppointmentBase.Infrastructure.Data;
@@ -15,6 +14,8 @@ using Entities = Microting.AppointmentBase.Infrastructure.Data.Entities;
 
 namespace Appointment.Pn.Services
 {
+    using Microting.eForm.Infrastructure.Constants;
+
     public class AppointmentsService : IAppointmentsService
     {
         private readonly IAppointmentLocalizationService _appointmentLocalizationService;
