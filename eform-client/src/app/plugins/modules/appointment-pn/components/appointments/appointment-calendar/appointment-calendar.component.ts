@@ -92,7 +92,7 @@ export class AppointmentCalendarComponent implements OnInit {
               draggable: a.startAt > moment() && a.expireAt.diff(a.startAt, 'h') < 24
             };
 
-            if (a.repeatType && !a.nextId) {
+            if (a.repeatType && !a.nextId && a.startAt > moment()) {
               // this will create copies of the repeatable event
               this.addRecurringAppointment(event, a);
             } else {
