@@ -8,14 +8,14 @@ using Appointment.Pn.Infrastructure.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microting.AppointmentBase.Infrastructure.Data;
-using Microting.AppointmentBase.Infrastructure.Data.Enums;
-using Microting.eForm.Infrastructure.Constants;
 using Microting.eFormApi.BasePn.Abstractions;
 using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 using Entities = Microting.AppointmentBase.Infrastructure.Data.Entities;
 
 namespace Appointment.Pn.Services
 {
+    using Microting.eForm.Infrastructure.Constants;
+
     public class AppointmentsService : IAppointmentsService
     {
         private readonly IAppointmentLocalizationService _appointmentLocalizationService;
@@ -53,9 +53,18 @@ namespace Appointment.Pn.Services
                         ColorHex = x.ColorHex,
                         RepeatUntil = x.RepeatUntil,
                         RepeatEvery = x.RepeatEvery,
-                        RepeatType = x.RepeatType
-                    }
-                    ).FirstOrDefaultAsync();
+                        RepeatType = x.RepeatType,
+                        eFormId = x.SdkeFormId,
+                        SiteUids = x.AppointmentSites.Where(s => s.WorkflowState != Constants.WorkflowStates.Removed).Select(s => s.MicrotingSiteUid).ToList(),
+                        Fields = x.AppointmentPrefillFieldValues.Where(s => s.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(f => new AppointmentFieldModel()
+                                {
+                                    Id = f.Id,
+                                    FieldId = f.FieldId,
+                                    FieldValue = f.FieldValue
+                                }
+                            ).ToList()
+                    }).FirstOrDefaultAsync();
 
                 if (appointmentModel == null)
                 {
@@ -78,9 +87,6 @@ namespace Appointment.Pn.Services
         {
             try
             {
-                Debugger.Break();
-                await UpdateRecurringAppointments();
-
                 var list = await _dbContext.Appointments
                     .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed
                                 && requestModel.EndDate > x.StartAt
@@ -140,10 +146,21 @@ namespace Appointment.Pn.Services
                         ColorHex = appointmentModel.ColorHex,
                         RepeatEvery = appointmentModel.RepeatEvery,
                         RepeatType = appointmentModel.RepeatType,
-                        RepeatUntil = appointmentModel.RepeatUntil
+                        RepeatUntil = appointmentModel.RepeatUntil,
+                        SdkeFormId = appointmentModel.eFormId
                     };
 
                     await appointment.Create(_dbContext);
+
+                    foreach (var siteUid in appointmentModel.SiteUids)
+                    {
+                        var appointmentSite = new Entities.AppointmentSite()
+                        {
+                            AppointmentId = appointment.Id,
+                            MicrotingSiteUid = siteUid
+                        };
+                        await appointmentSite.Create(_dbContext);
+                    }
 
                     transaction.Commit();
                     return new OperationResult(
@@ -166,7 +183,11 @@ namespace Appointment.Pn.Services
             {
                 try
                 {
-                    var appointment = await _dbContext.Appointments.FindAsync(appointmentModel.Id);
+                    Debugger.Break();
+                    var appointment = await _dbContext.Appointments
+                        .Include(x => x.AppointmentSites)
+                        .Include(x => x.AppointmentPrefillFieldValues)
+                        .FirstOrDefaultAsync(x => x.Id == appointmentModel.Id);
 
                     if (appointment.StartAt <= DateTime.UtcNow)
                     {
@@ -199,8 +220,52 @@ namespace Appointment.Pn.Services
                     appointment.RepeatEvery = appointmentModel.RepeatEvery;
                     appointment.RepeatType = appointmentModel.RepeatType;
                     appointment.RepeatUntil = appointmentModel.RepeatUntil;
+                    appointment.SdkeFormId = appointmentModel.eFormId;
 
                     await appointment.Update(_dbContext);
+
+                    var asToDelete = appointment.AppointmentSites
+                        .Where(s => appointmentModel.SiteUids.All(x => x != s.MicrotingSiteUid));
+
+                    foreach (var site in asToDelete)
+                    {
+                        await site.Delete(_dbContext);
+                    }
+
+                    var asToCreate = appointmentModel.SiteUids
+                        .Where(s => appointment.AppointmentSites.All(x => x.MicrotingSiteUid != s));
+
+                    foreach (var siteUid in asToCreate)
+                    {
+                        var appointmentSite = new Entities.AppointmentSite()
+                        {
+                            AppointmentId = appointment.Id,
+                            MicrotingSiteUid = siteUid
+                        };
+                        await appointmentSite.Create(_dbContext);
+                    }
+
+                    var afToDelete = appointment.AppointmentPrefillFieldValues
+                        .Where(f => appointmentModel.Fields.All(x => x.FieldId != f.FieldId));
+
+                    foreach (var field in afToDelete)
+                    {
+                        await field.Delete(_dbContext);
+                    }
+
+                    var afToCreate = appointmentModel.Fields
+                        .Where(f => appointment.AppointmentPrefillFieldValues.All(x => x.FieldId != f.FieldId));
+
+                    foreach (var field in afToCreate)
+                    {
+                        var appointmentPrefillField = new Entities.AppointmentPrefillFieldValue()
+                        {
+                            AppointmentId = appointment.Id,
+                            FieldId = field.FieldId,
+                            FieldValue = field.FieldValue
+                        };
+                        await appointmentPrefillField.Create(_dbContext);
+                    }
 
                     transaction.Commit();
                     return new OperationResult(
@@ -233,6 +298,16 @@ namespace Appointment.Pn.Services
                             _appointmentLocalizationService.GetString("CannotDeleteAppointment"));
                     }
 
+                    foreach (var appointmentSite in appointment.AppointmentSites)
+                    {
+                        await appointmentSite.Delete(_dbContext);
+                    }
+
+                    foreach (var appointmentField in appointment.AppointmentPrefillFieldValues)
+                    {
+                        await appointmentField.Delete(_dbContext);
+                    }
+
                     await appointment.Delete(_dbContext);
 
                     transaction.Commit();
@@ -257,69 +332,6 @@ namespace Appointment.Pn.Services
             {
                 var value = _httpContextAccessor?.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier);
                 return value == null ? 0 : int.Parse(value);
-            }
-        }
-
-        private async Task UpdateRecurringAppointments()
-        {
-            var recurringAppointments = await _dbContext.Appointments.Where(x => 
-                    x.WorkflowState != Constants.WorkflowStates.Removed
-                    && x.RepeatEvery != null
-                    && x.StartAt != null
-                    && x.RepeatType != null
-                    && x.NextId == null
-                    && (x.RepeatUntil == null || x.RepeatUntil > DateTime.UtcNow)
-                ).ToListAsync();
-
-            foreach (var appointment in recurringAppointments)
-            {
-                var prevAppointment = appointment;
-
-                var duration = prevAppointment.ExpireAt - prevAppointment.StartAt;
-                var repeatEvery = prevAppointment.RepeatEvery.GetValueOrDefault();
-                var repeatType = prevAppointment.RepeatType.GetValueOrDefault();
-                var repeatUntil = prevAppointment.RepeatUntil;
-                var prevDate = prevAppointment.StartAt.GetValueOrDefault();
-                var nextDate = GetNextAppointmentDate(prevDate, repeatType, repeatEvery);
-
-                while ((repeatUntil == null || nextDate <= repeatUntil) && prevDate <= DateTime.UtcNow)
-                {
-                    var nextAppointment = new Entities.Appointment
-                    {
-                        CreatedByUserId = UserId,
-                        ExpireAt = nextDate + duration,
-                        StartAt = nextDate,
-                        Info = prevAppointment.Info,
-                        Description = prevAppointment.Description,
-                        Title = prevAppointment.Title,
-                        ColorHex = prevAppointment.ColorHex,
-                        RepeatEvery = prevAppointment.RepeatEvery,
-                        RepeatType = prevAppointment.RepeatType,
-                        RepeatUntil = prevAppointment.RepeatUntil
-                    };
-
-                    await nextAppointment.Create(_dbContext);
-
-                    prevAppointment.NextId = nextAppointment.Id;
-                    await prevAppointment.Update(_dbContext);
-
-                    prevDate = nextDate;
-                    nextDate = GetNextAppointmentDate(prevDate, repeatType, repeatEvery);
-                    prevAppointment = nextAppointment;
-                }
-            }
-        }
-
-        private DateTime GetNextAppointmentDate(DateTime prevDate, RepeatType repeatType, int repeatEvery)
-        {
-            switch (repeatType)
-            {
-                case RepeatType.Month:
-                    return prevDate.AddMonths(repeatEvery);
-                case RepeatType.Week:
-                    return prevDate.AddDays(repeatEvery * 7);
-                default:
-                    return prevDate.AddDays(repeatEvery);
             }
         }
     }
