@@ -7,7 +7,7 @@
         <div class="modal-body">
           <div class="container-fluid">
             <div class="row">
-              <div class="col-xl-8 col-lg-10 col-md-12">
+              <div class="col">
                 <div class="md-form">
                   <input mdbInputDirective
                          [mdbValidate]="false"
@@ -19,7 +19,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-xl-4 col-lg-5 col-md-6">
+              <div class="col-md-6">
                 <div class="md-form" [owlDateTimeTrigger]="dt1">
                   <input mdbInputDirective
                          [owlDateTime]="dt1"
@@ -31,7 +31,7 @@
                   <label for="startAt">{{'Start at' | translate}}*</label>
                 </div>
               </div>
-              <div class="col-xl-4 col-lg-5 col-md-6">
+              <div class="col-md-6">
                 <div class="md-form" [owlDateTimeTrigger]="dt2">
                   <input mdbInputDirective
                          [owlDateTime]="dt2"
@@ -45,7 +45,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-xl-2 col-lg-3 col-md-4">
+              <div class="col-md-4">
                 <div class="md-form">
                   <input mdbInputDirective
                          [mdbValidate]="false"
@@ -55,7 +55,7 @@
                   <label for="createRepeatEvery">{{'Repeat every' | translate}}</label>
                 </div>
               </div>
-              <div class="col-xl-3 col-lg-3 col-md-4 ng-select-wrapper">
+              <div class="col-md-4 ng-select-wrapper">
                 <ng-select [items]="[
                     {id: 1, name: 'Day' | translate},
                     {id: 2, name: 'Week' | translate},
@@ -68,7 +68,7 @@
                            id="createRepeatType">
                 </ng-select>
               </div>
-              <div class="col-xl-3 col-lg-4 col-md-4">
+              <div class="col-md-4">
                 <div class="md-form" [owlDateTimeTrigger]="dt3">
                   <input mdbInputDirective
                          [owlDateTime]="dt3"
@@ -82,7 +82,7 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-xl-8 col-lg-10 col-md-12">
+              <div class="col-lg-6">
                 <div class="md-form">
                   <textarea mdbInputDirective
                             [mdbValidate]="false"
@@ -92,9 +92,7 @@
                   <label for="description">{{'Description' | translate}}</label>
                 </div>
               </div>
-            </div>
-            <div class="row">
-              <div class="col-xl-8 col-lg-10 col-md-12">
+              <div class="col-lg-6">
                 <div class="md-form">
                   <textarea mdbInputDirective
                             [mdbValidate]="false"
@@ -106,7 +104,60 @@
               </div>
             </div>
             <div class="row">
-              <div class="col-xl-6 col-lg-7 col-md-8">
+              <div class="col">
+                <div class="md-form">
+                  <ng-select [items]="templatesModel.templates"
+                             bindLabel="label"
+                             [placeholder]="('Selected template' | translate)"
+                             bindValue="id"
+                             [typeahead]="typeahead"
+                             [(ngModel)]="selectedModel.eFormId"
+                             (change)="onTemplateChange()"
+                             id="templateSelector">
+                  </ng-select>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="selectedTemplate.id">
+              <div class="col">
+                <div class="pb-4">
+                  <h6 class="pb-2">{{'Template pairing' | translate}}</h6>
+                  <table class="table table-xs table-bordered text-center z-depth-1">
+                    <thead>
+                    <tr>
+                      <th>Microting ID</th>
+                      <th>{{ 'Device user' | translate }}</th>
+                      <th>{{ 'Check to pair' | translate }}</th>
+                    </tr>
+                    </thead>
+                    <tbody id="pairingModalTableBody">
+                    <tr *ngFor="let pairing of pairingSites; let i = index">
+                      <td class="align-middle">{{pairing.site.siteUId}}</td>
+                      <td class="align-middle">{{pairing.site.siteName}}</td>
+                      <td class="align-middle">
+                        <div class="mat-checkbox">
+                          <input id="site_checkbox_{{i}}"
+                                 [checked]="pairing.deploy"
+                                 [value]="pairing.site.siteUId" [(ngModel)]="pairing.deploy" type="checkbox">
+                          <label for="site_checkbox_{{i}}"></label>
+                        </div>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="row" *ngIf="selectedTemplate.id">
+              <div class="col">
+                <div class="pb-4">
+                  <h6 class="pb-2">{{'Template fields' | translate}}</h6>
+                  <app-appointment-prefill-field [fieldsList]="fields"></app-appointment-prefill-field>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xl-10 col-lg-9 col-md-8 col-sm-7">
                 <div class="md-form">
                   <input mdbInputDirective
                          [mdbValidate]="false"
@@ -116,7 +167,7 @@
                   <label for="colorHex">{{'Color' | translate}}*</label>
                 </div>
               </div>
-              <div class="col-xl-2 col-lg-3 col-md-4">
+              <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
                 <div class="py-4">
                   <input mdbInputDirective
                          [(ngModel)]="selectedModel.colorHex"

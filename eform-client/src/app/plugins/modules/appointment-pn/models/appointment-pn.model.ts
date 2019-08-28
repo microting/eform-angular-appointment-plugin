@@ -1,4 +1,5 @@
 import {Moment} from 'moment';
+import {AppointmentFieldModel} from './appointment-pn-field.model';
 
 export enum RepeatType {
   Day = 1,
@@ -18,4 +19,7 @@ export class AppointmentModel {
   repeatType: number;
   repeatUntil: Moment;
   nextId: number;
+  eFormId: number;
+  siteUids: number[] = [];
+  fields: AppointmentFieldModel[] = [];
 }

@@ -27,10 +27,11 @@ using Microting.AppointmentBase.Infrastructure.Data;
 using Microting.eFormApi.BasePn.Infrastructure.Database.Entities;
 using System;
 using System.Linq;
-using Microting.eForm.Infrastructure.Constants;
 
 namespace Appointment.Pn.Infrastructure.Data.Seed
 {
+    using Microting.eForm.Infrastructure.Constants;
+
     public class AppointmentPluginSeed
     {
         public static void SeedData(AppointmentPnDbContext dbContext)
