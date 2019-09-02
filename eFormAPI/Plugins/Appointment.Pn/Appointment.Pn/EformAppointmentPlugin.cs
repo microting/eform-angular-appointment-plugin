@@ -161,7 +161,7 @@ namespace Appointment.Pn
                 contextFactory);
 
             // Add handlers
-            CaseUpdateDelegates.CaseUpdateDelegate += CaseUpdatePluginHandler.Handle;
+//            CaseUpdateDelegates.CaseUpdateDelegate += CaseUpdatePluginHandler.Handle;
         }
     }
 }
