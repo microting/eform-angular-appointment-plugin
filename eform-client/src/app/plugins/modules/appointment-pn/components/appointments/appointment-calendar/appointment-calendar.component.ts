@@ -59,8 +59,8 @@ export class AppointmentCalendarComponent implements OnInit {
 
   getAppointmentsList() {
     const request: AppointmentRequestModel = {
-      startDate: this.period.start.toISOString(),
-      endDate: this.period.end.toISOString()
+      startDate: moment(this.period.start).utcOffset(0, true).toISOString(),
+      endDate: moment(this.period.end).utcOffset(0, true).toISOString()
     };
 
     this.appointmentPnCalendarService.getAppointmentsList(request).subscribe((data) => {
@@ -71,9 +71,9 @@ export class AppointmentCalendarComponent implements OnInit {
           this.events = [];
 
           for (const a of listModel.appointments) {
-            a.startAt = moment(a.startAt);
-            a.expireAt = moment(a.expireAt);
-            a.repeatUntil = a.repeatUntil ? moment(a.repeatUntil) : null;
+            a.startAt = moment(a.startAt).utc(true).local();
+            a.expireAt = moment(a.expireAt).utc(true).local();
+            a.repeatUntil = a.repeatUntil ? moment(a.repeatUntil).utc(true).local() : null;
 
             const event = {
               id: a.id,
@@ -152,6 +152,8 @@ export class AppointmentCalendarComponent implements OnInit {
   viewEvent(eventToView: CalendarEvent) {
     this.appointmentPnCalendarService.getAppointment(eventToView.id).subscribe(data => {
       if (data && data.success) {
+        data.model.startAt = moment(data.model.startAt).local();
+        data.model.expireAt = moment(data.model.expireAt).local();
         this.viewAppointmentModal.show(data.model);
       }
     });
@@ -160,6 +162,8 @@ export class AppointmentCalendarComponent implements OnInit {
   editEvent(eventToEdit: CalendarEvent) {
     this.appointmentPnCalendarService.getAppointment(eventToEdit.id).subscribe(data => {
       if (data && data.success) {
+        data.model.startAt = moment(data.model.startAt).local();
+        data.model.expireAt = moment(data.model.expireAt).local();
         this.showEditAppointmentModal(data.model);
       }
     });
@@ -168,6 +172,8 @@ export class AppointmentCalendarComponent implements OnInit {
   deleteEvent(eventToDelete: CalendarEvent) {
     this.appointmentPnCalendarService.getAppointment(eventToDelete.id).subscribe(data => {
       if (data && data.success) {
+        data.model.startAt = moment(data.model.startAt).local();
+        data.model.expireAt = moment(data.model.expireAt).local();
         this.deleteAppointmentModal.show(data.model);
       }
     });

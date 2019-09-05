@@ -22,8 +22,8 @@ export class AppointmentViewComponent implements OnInit {
 
   show(model: AppointmentModel) {
     this.selectedModel = model;
-    this.selectedModel.startAt = moment(this.selectedModel.startAt);
-    this.selectedModel.expireAt = moment(this.selectedModel.expireAt);
+    this.selectedModel.startAt = moment(this.selectedModel.startAt).utc(true).local();
+    this.selectedModel.expireAt = moment(this.selectedModel.expireAt).utc(true).local();
     this.frame.show();
   }
 }
