@@ -5,8 +5,10 @@ import {Subject} from 'rxjs';
 import {AppointmentModel, AppointmentSimpleModel, RepeatType} from '../../../models';
 import {AppointmentPnCalendarService} from '../../../services';
 import * as moment from 'moment';
-import {AppointmentRequestModel} from '../../../models/appointment-pn-request.model';
+import {AppointmentRequestModel} from '../../../models';
 import {ViewPeriod} from 'calendar-utils';
+import {PluginClaimsHelper} from '../../../../../../common/helpers';
+import {AppointmentPnClaims} from '../../../const/appointment-pn-claims.const';
 
 @Component({
   selector: 'app-appointment-calendar',
@@ -39,6 +41,14 @@ export class AppointmentCalendarComponent implements OnInit {
   activeDayIsOpen = false;
   period: ViewPeriod;
   locale: string;
+
+  get pluginClaimsHelper() {
+    return PluginClaimsHelper;
+  }
+
+  get appointmentPnClaims() {
+    return AppointmentPnClaims;
+  }
 
   constructor(
     private appointmentPnCalendarService: AppointmentPnCalendarService
