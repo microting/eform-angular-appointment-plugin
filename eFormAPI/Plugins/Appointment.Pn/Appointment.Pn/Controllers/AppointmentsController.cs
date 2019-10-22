@@ -3,6 +3,7 @@ using Appointment.Pn.Abstractions;
 using Appointment.Pn.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microting.AppointmentBase.Infrastructure.Data.Constants;
 using Microting.eFormApi.BasePn.Infrastructure.Models.API;
 
 namespace Appointment.Pn.Controllers
@@ -33,6 +34,7 @@ namespace Appointment.Pn.Controllers
 
         [HttpPost]
         [Route("api/appointment-pn/appointments")]
+        [Authorize(Policy = AppointmentClaims.CreateAppointments)]
         public async Task<OperationResult> CreateAppointment([FromBody] AppointmentModel createModel)
         {
             return await _appointmentsService.CreateAppointment(createModel);

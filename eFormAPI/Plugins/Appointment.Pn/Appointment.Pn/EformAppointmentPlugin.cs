@@ -45,14 +45,17 @@ using Microting.eFormApi.BasePn.Infrastructure.Settings;
 namespace Appointment.Pn
 {
     using Infrastructure.Handlers.CaseUpdate;
+    using Microting.AppointmentBase.Infrastructure.Data.Constants;
     using Microting.eFormApi.BasePn.Infrastructure.Delegates.CaseUpdate;
+    using Microting.eFormApi.BasePn.Infrastructure.Helpers;
 
     public class EformAppointmentPlugin : IEformPlugin
     {
-       
         public string Name => "Microting Appointment Plugin";
         public string PluginId => "eform-angular-appointment-plugin";
         public string PluginPath => PluginAssembly().Location;
+        public string PluginBaseUrl => "appointment-pn";
+
         private string _connectionString;
         private int _maxParallelism = 1;
         private int _numberOfWorkers = 1;
@@ -121,6 +124,7 @@ namespace Appointment.Pn
                 Name = localizationService.GetString("Appointment"),
                 E2EId = "",
                 Link = "",
+                Guards = new List<string>() { AppointmentClaims.AccessAppointmentPlugin },
                 MenuItems = new List<MenuItemModel>()
                 {
                     new MenuItemModel()
@@ -129,13 +133,6 @@ namespace Appointment.Pn
                         E2EId = "appointment-pn-calendar",
                         Link = "/plugins/appointment-pn/calendar",
                         Position = 0,
-                    },
-                    new MenuItemModel()
-                    {
-                        Name = localizationService.GetString("Settings"),
-                        E2EId = "appointment-pn-settings",
-                        Link = "/plugins/appointment-pn/settings",
-                        Position = 1,
                     }
                 }
             });
@@ -162,6 +159,14 @@ namespace Appointment.Pn
 
             // Add handlers
 //            CaseUpdateDelegates.CaseUpdateDelegate += CaseUpdatePluginHandler.Handle;
+        }
+
+        public PluginPermissionsManager GetPermissionsManager(string connectionString)
+        {
+            var contextFactory = new AppointmentPnContextFactory();
+            var context = contextFactory.CreateDbContext(new[] { connectionString });
+
+            return new PluginPermissionsManager(context);
         }
     }
 }
