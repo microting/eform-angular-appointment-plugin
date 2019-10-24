@@ -68,8 +68,9 @@ export class AppointmentEditComponent implements OnInit {
 
     if (model) {
       this.selectedModel = model;
-      this.selectedModel.startAt = moment(this.selectedModel.startAt);
-      this.selectedModel.expireAt = moment(this.selectedModel.expireAt);
+      this.selectedModel.startAt = moment(model.startAt).utc(true).local();
+      this.selectedModel.expireAt = moment(model.expireAt).utc(true).local();
+      this.selectedModel.repeatUntil = model.repeatUntil ? moment(model.repeatUntil).utc(true).local() : null;
       this.updateSelectedTemplate();
     } else {
       this.selectedTemplate = null;
@@ -86,10 +87,10 @@ export class AppointmentEditComponent implements OnInit {
     }
 
     this.spinnerStatus = true;
-    this.selectedModel.startAt.utcOffset(0, true);
+    this.selectedModel.startAt.utcOffset(0, false);
 
     if (this.selectedModel.expireAt) {
-      this.selectedModel.expireAt.utcOffset(0, true);
+      this.selectedModel.expireAt.utcOffset(0, false);
     }
 
     this.selectedModel.siteUids = this.pairingSites.filter(s => s.deploy).map(s => s.site.siteUId);
@@ -143,12 +144,19 @@ export class AppointmentEditComponent implements OnInit {
 
     this.eFormService.getFields(this.selectedModel.eFormId).subscribe(operation => {
       if (operation && operation.success) {
+        this.fields = [];
+
         for (const field of operation.model) {
           const fieldValue = new FieldValueDto();
           const appointmentField = this.selectedModel.fields && this.selectedModel.fields.find(x => x.fieldId === field.id);
 
           if (appointmentField) {
             fieldValue.value = appointmentField.fieldValue;
+
+            if (Array.isArray(field.keyValuePairList)) {
+              const pair = field.keyValuePairList.find(x => x.key === appointmentField.fieldValue);
+              fieldValue.valueReadable = pair ? pair.value : null;
+            }
           } else {
             fieldValue.value = '';
           }

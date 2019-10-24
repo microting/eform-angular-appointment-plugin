@@ -1,13 +1,16 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 import {AppointmentPnLayoutComponent} from './layouts';
-import {AdminGuard} from '../../../common/guards';
+import {AdminGuard, PermissionGuard} from '../../../common/guards';
 import {AppointmentCalendarComponent, AppointmentSettingsComponent} from './components';
+import {AppointmentPnClaims} from './const';
 
 export const routes: Routes = [
   {
     path: '',
     component: AppointmentPnLayoutComponent,
+    canActivate: [PermissionGuard],
+    data: {requiredPermission: AppointmentPnClaims.accessAppointmentPlugin},
     children: [
       {
         path: 'settings',
