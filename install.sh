@@ -17,23 +17,24 @@ echo "################## END GITVERSION ##################"
 su ubuntu -c \
 "dotnet publish eFormAPI/Plugins/Appointment.Pn/Appointment.Pn.sln -o out /p:Version=$GITVERSION --runtime linux-x64 --configuration Release"
 
-if [ -d "/var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn"]; then
+if [ -d "/var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/appointment-pn" ]; then
 	su ubuntu -c \
-	"rm -fR /var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn"
+	"rm -fR /var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/appointment-pn"
 fi
-
 su ubuntu -c \
-"cp -av /var/www/microting/eform-angular-appointment-plugin/eform-client/src/app/plugins/modules/items-planning-pn /var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn"
+"cp -av /var/www/microting/eform-angular-appointment-plugin/eform-client/src/app/plugins/modules/appointment-pn /var/www/microting/eform-angular-frontend/eform-client/src/app/plugins/modules/appointment-pn"
+
+
 su ubuntu -c \
 "mkdir -p /var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/"
 
-if [ -d "/var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/TrashInspection"]; then
+if [ -d "/var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/Appointment" ]; then
 	su ubuntu -c \
-	"rm -fR /var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/TrashInspection"
+	"rm -fR /var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/Appointment"
 fi
 
 su ubuntu -c \
-"cp -av /var/www/microting/eform-angular-appointment-plugin/eFormAPI/Plugins/Appointment.Pn/Appointment.Pn/out /var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/TrashInspection"
+"cp -av /var/www/microting/eform-angular-appointment-plugin/eFormAPI/Plugins/Appointment.Pn/Appointment.Pn/out /var/www/microting/eform-angular-frontend/eFormAPI/eFormAPI.Web/out/Plugins/Appointment"
 
 
 echo "Recompile angular"
