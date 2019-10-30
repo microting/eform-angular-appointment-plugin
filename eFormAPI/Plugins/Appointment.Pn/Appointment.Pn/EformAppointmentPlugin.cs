@@ -44,9 +44,7 @@ using Microting.eFormApi.BasePn.Infrastructure.Settings;
 
 namespace Appointment.Pn
 {
-    using Infrastructure.Handlers.CaseUpdate;
     using Microting.AppointmentBase.Infrastructure.Data.Constants;
-    using Microting.eFormApi.BasePn.Infrastructure.Delegates.CaseUpdate;
     using Microting.eFormApi.BasePn.Infrastructure.Helpers;
 
     public class EformAppointmentPlugin : IEformPlugin
