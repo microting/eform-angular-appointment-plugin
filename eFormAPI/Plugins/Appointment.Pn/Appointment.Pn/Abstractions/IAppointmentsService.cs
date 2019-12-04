@@ -6,10 +6,10 @@ namespace Appointment.Pn.Abstractions
 {
     public interface IAppointmentsService
     {
-        Task<OperationDataResult<AppointmentModel>> GetAppointment(int id);
-        Task<OperationDataResult<AppointmentsListModel>> GetAppointmentsList(AppointmentRequestModel requestModel);
-        Task<OperationResult> UpdateAppointment(AppointmentModel appointmentModel);
-        Task<OperationResult> CreateAppointment(AppointmentModel appointmentModel);
-        Task<OperationResult> DeleteAppointment(int id);
+        Task<OperationDataResult<AppointmentsListModel>> Index(AppointmentRequestModel requestModel);
+        Task<OperationResult> Create(AppointmentModel appointmentModel);
+        Task<OperationDataResult<AppointmentModel>> Read(int id);
+        Task<OperationResult> Update(AppointmentModel appointmentModel);
+        Task<OperationResult> Delete(int id);
     }
 }

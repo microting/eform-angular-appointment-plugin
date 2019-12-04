@@ -35,55 +35,7 @@ namespace Appointment.Pn.Services
             _httpContextAccessor = httpContextAccessor;
             _coreHelper = coreHelper;
         }
-
-        public async Task<OperationDataResult<AppointmentModel>> GetAppointment(int id)
-        {
-            try
-            {
-                var appointmentModel = await _dbContext.Appointments
-                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == id)
-                    .Select(x => new AppointmentModel
-                    {
-                        Id = x.Id,
-                        StartAt = x.StartAt,
-                        ExpireAt = x.ExpireAt,
-                        Title = x.Title,
-                        Description = x.Description,
-                        Info = x.Info,
-                        ColorHex = x.ColorHex,
-                        RepeatUntil = x.RepeatUntil,
-                        RepeatEvery = x.RepeatEvery,
-                        RepeatType = x.RepeatType,
-                        eFormId = x.SdkeFormId,
-                        SiteUids = x.AppointmentSites.Where(s => s.WorkflowState != Constants.WorkflowStates.Removed).Select(s => s.MicrotingSiteUid).ToList(),
-                        Fields = x.AppointmentPrefillFieldValues.Where(s => s.WorkflowState != Constants.WorkflowStates.Removed)
-                            .Select(f => new AppointmentFieldModel()
-                                {
-                                    Id = f.Id,
-                                    FieldId = f.FieldId,
-                                    FieldValue = f.FieldValue
-                                }
-                            ).ToList()
-                    }).FirstOrDefaultAsync();
-
-                if (appointmentModel == null)
-                {
-                    return new OperationDataResult<AppointmentModel>(
-                        false,
-                        _appointmentLocalizationService.GetString("AppointmentNotFound"));
-                }
-
-                return new OperationDataResult<AppointmentModel>(true, appointmentModel);
-            }
-            catch (Exception e)
-            {
-                Trace.TraceError(e.Message);
-                return new OperationDataResult<AppointmentModel>(false,
-                    _appointmentLocalizationService.GetString("ErrorGettingAppointment"));
-            }
-        }
-
-        public async Task<OperationDataResult<AppointmentsListModel>> GetAppointmentsList(AppointmentRequestModel requestModel)
+        public async Task<OperationDataResult<AppointmentsListModel>> Index(AppointmentRequestModel requestModel)
         {
             try
             {
@@ -92,20 +44,20 @@ namespace Appointment.Pn.Services
                                 && requestModel.EndDate > x.StartAt
                                 && (requestModel.StartDate < x.StartAt
                                     || x.RepeatType != null 
-                                        && x.NextId == null
-                                        && (x.RepeatUntil == null || x.RepeatUntil > requestModel.StartDate)))
+                                    && x.NextId == null
+                                    && (x.RepeatUntil == null || x.RepeatUntil > requestModel.StartDate)))
                     .Select(x => new AppointmentSimpleModel()
-                    {
-                        Id = x.Id,
-                        StartAt = x.StartAt,
-                        ExpireAt = x.ExpireAt,
-                        Title = x.Title,
-                        ColorHex = x.ColorHex,
-                        RepeatUntil = x.RepeatUntil,
-                        RepeatEvery = x.RepeatEvery,
-                        RepeatType = x.RepeatType,
-                        NextId = x.NextId
-                    }
+                        {
+                            Id = x.Id,
+                            StartAt = x.StartAt,
+                            ExpireAt = x.ExpireAt,
+                            Title = x.Title,
+                            ColorHex = x.ColorHex,
+                            RepeatUntil = x.RepeatUntil,
+                            RepeatEvery = x.RepeatEvery,
+                            RepeatType = x.RepeatType,
+                            NextId = x.NextId
+                        }
                     ).ToListAsync();
 
                 var listModel = new AppointmentsListModel { Total = list.Count(), Appointments = list };
@@ -119,8 +71,8 @@ namespace Appointment.Pn.Services
                     _appointmentLocalizationService.GetString("ErrorGettingAppointmentsList"));
             }
         }
-
-        public async Task<OperationResult> CreateAppointment(AppointmentModel appointmentModel)
+        
+        public async Task<OperationResult> Create(AppointmentModel appointmentModel)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
@@ -176,8 +128,59 @@ namespace Appointment.Pn.Services
                 }
             }
         }
+        
+        public async Task<OperationDataResult<AppointmentModel>> Read(int id)
+        {
+            try
+            {
+                var appointmentModel = await _dbContext.Appointments
+                    .Where(x => x.WorkflowState != Constants.WorkflowStates.Removed && x.Id == id)
+                    .Select(x => new AppointmentModel
+                    {
+                        Id = x.Id,
+                        StartAt = x.StartAt,
+                        ExpireAt = x.ExpireAt,
+                        Title = x.Title,
+                        Description = x.Description,
+                        Info = x.Info,
+                        ColorHex = x.ColorHex,
+                        RepeatUntil = x.RepeatUntil,
+                        RepeatEvery = x.RepeatEvery,
+                        RepeatType = x.RepeatType,
+                        eFormId = x.SdkeFormId,
+                        SiteUids = x.AppointmentSites.Where(s => s.WorkflowState != Constants.WorkflowStates.Removed).Select(s => s.MicrotingSiteUid).ToList(),
+                        Fields = x.AppointmentPrefillFieldValues.Where(s => s.WorkflowState != Constants.WorkflowStates.Removed)
+                            .Select(f => new AppointmentFieldModel()
+                                {
+                                    Id = f.Id,
+                                    FieldId = f.FieldId,
+                                    FieldValue = f.FieldValue
+                                }
+                            ).ToList()
+                    }).FirstOrDefaultAsync();
 
-        public async Task<OperationResult> UpdateAppointment(AppointmentModel appointmentModel)
+                if (appointmentModel == null)
+                {
+                    return new OperationDataResult<AppointmentModel>(
+                        false,
+                        _appointmentLocalizationService.GetString("AppointmentNotFound"));
+                }
+
+                return new OperationDataResult<AppointmentModel>(true, appointmentModel);
+            }
+            catch (Exception e)
+            {
+                Trace.TraceError(e.Message);
+                return new OperationDataResult<AppointmentModel>(false,
+                    _appointmentLocalizationService.GetString("ErrorGettingAppointment"));
+            }
+        }
+
+        
+
+        
+
+        public async Task<OperationResult> Update(AppointmentModel appointmentModel)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
@@ -283,7 +286,7 @@ namespace Appointment.Pn.Services
             }
         }
 
-        public async Task<OperationResult> DeleteAppointment(int id)
+        public async Task<OperationResult> Delete(int id)
         {
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
