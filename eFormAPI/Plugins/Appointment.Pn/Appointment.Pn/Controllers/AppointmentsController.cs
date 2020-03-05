@@ -20,38 +20,38 @@ namespace Appointment.Pn.Controllers
 
         [HttpGet]
         [Route("api/appointment-pn/appointments")]
-        public async Task<OperationDataResult<AppointmentsListModel>> GetAppointmentsList(AppointmentRequestModel requestModel)
+        public async Task<OperationDataResult<AppointmentsListModel>> Index(AppointmentRequestModel requestModel)
         {
-            return await _appointmentsService.GetAppointmentsList(requestModel);
+            return await _appointmentsService.Index(requestModel);
         }
 
         [HttpGet]
         [Route("api/appointment-pn/appointments/{id}")]
-        public async Task<OperationDataResult<AppointmentModel>> GetAppointment(int id)
+        public async Task<OperationDataResult<AppointmentModel>> Read(int id)
         {
-            return await _appointmentsService.GetAppointment(id);
+            return await _appointmentsService.Read(id);
         }
 
         [HttpPost]
         [Route("api/appointment-pn/appointments")]
         [Authorize(Policy = AppointmentClaims.CreateAppointments)]
-        public async Task<OperationResult> CreateAppointment([FromBody] AppointmentModel createModel)
+        public async Task<OperationResult> Create([FromBody] AppointmentModel createModel)
         {
-            return await _appointmentsService.CreateAppointment(createModel);
+            return await _appointmentsService.Create(createModel);
         }
 
         [HttpPut]
         [Route("api/appointment-pn/appointments")]
-        public async Task<OperationResult> UpdateAppointment([FromBody] AppointmentModel updateModel)
+        public async Task<OperationResult> Update([FromBody] AppointmentModel updateModel)
         {
-            return await _appointmentsService.UpdateAppointment(updateModel);
+            return await _appointmentsService.Update(updateModel);
         }
 
         [HttpDelete]
         [Route("api/appointment-pn/appointments/{id}")]
-        public async Task<OperationResult> DeleteAppointment(int id)
+        public async Task<OperationResult> Delete(int id)
         {
-            return await _appointmentsService.DeleteAppointment(id);
+            return await _appointmentsService.Delete(id);
         }
     }
 }
