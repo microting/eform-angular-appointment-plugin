@@ -16,9 +16,9 @@ import {AppointmentPnClaims} from '../../../const/appointment-pn-claims.const';
   styleUrls: ['./appointment-calendar.component.scss']
 })
 export class AppointmentCalendarComponent implements OnInit {
-  @ViewChild('editAppointmentModal') editAppointmentModal;
-  @ViewChild('viewAppointmentModal') viewAppointmentModal;
-  @ViewChild('deleteAppointmentModal') deleteAppointmentModal;
+  @ViewChild('editAppointmentModal', {static: false}) editAppointmentModal;
+  @ViewChild('viewAppointmentModal', {static: false}) viewAppointmentModal;
+  @ViewChild('deleteAppointmentModal', {static: false}) deleteAppointmentModal;
   view: CalendarView;
   CalendarView = CalendarView;
   viewDate: Date = new Date();

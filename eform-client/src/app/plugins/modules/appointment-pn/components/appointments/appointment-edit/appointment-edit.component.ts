@@ -17,7 +17,7 @@ import {FieldDto} from '../../../../../../common/models/dto/field.dto';
   styleUrls: ['./appointment-edit.component.scss']
 })
 export class AppointmentEditComponent implements OnInit {
-  @ViewChild('frame') frame;
+  @ViewChild('frame', {static: false}) frame;
   @Output() appointmentSaved: EventEmitter<void> = new EventEmitter<void>();
   spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();
