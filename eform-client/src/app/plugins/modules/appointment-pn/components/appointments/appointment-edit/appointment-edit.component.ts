@@ -2,7 +2,6 @@ import {ChangeDetectorRef, Component, EventEmitter, OnInit, Output, ViewChild} f
 import {AppointmentFieldModel, AppointmentModel} from '../../../models';
 import {AppointmentPnCalendarService} from '../../../services';
 import * as moment from 'moment';
-import {DateTimeAdapter} from 'ng-pick-datetime';
 import {debounceTime, switchMap} from 'rxjs/operators';
 import {TemplateListModel, TemplateRequestModel} from '../../../../../../common/models/eforms';
 import {EFormService} from '../../../../../../common/services/eform';
@@ -10,6 +9,7 @@ import {FieldValueDto, SiteNameDto, TemplateDto} from '../../../../../../common/
 import {SitesService} from '../../../../../../common/services/advanced';
 import {AuthService} from '../../../../../../common/services/auth';
 import {FieldDto} from '../../../../../../common/models/dto/field.dto';
+import {DateTimeAdapter} from 'ng-pick-datetime-ex';
 
 @Component({
   selector: 'app-appointment-edit',

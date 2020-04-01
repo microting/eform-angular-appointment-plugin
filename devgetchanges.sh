@@ -13,7 +13,7 @@ cp -a Documents/workspace/microting/eform-angular-frontend/eFormAPI/Plugins/Appo
 # Test files rm
 rm -fR Documents/workspace/microting/eform-angular-appointment-plugin/eform-client/e2e/Tests/appointment-settings/
 rm -fR Documents/workspace/microting/eform-angular-appointment-plugin/eform-client/e2e/Tests/appointment-general/
-rm -fR Documents/workspace/microting/eform-angular-appointment-plugin/eform-client/e2e/Page\ objects/Monitoring/
+rm -fR Documents/workspace/microting/eform-angular-appointment-plugin/eform-client/e2e/Page\ objects/Appointment/
 rm -fR Documents/workspace/microting/eform-angular-appointment-plugin/eform-client/wdio-headless-plugin-step2.conf.js
 
 # Test files cp
