@@ -24,26 +24,28 @@ import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 import localeDa from '@angular/common/locales/da';
 import {AppointmentPrefillFieldComponent} from './components/appointments/appointment-prefill-field/appointment-prefill-field.component';
 import {CasesModule} from '../../../modules';
+import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
 
 registerLocaleData(localeDa);
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedPnModule,
-    MDBBootstrapModule,
-    AppointmentPnRoutingModule,
-    TranslateModule,
-    FormsModule,
-    NgSelectModule,
-    EformSharedModule,
-    FontAwesomeModule,
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory
-    }),
-    CasesModule
-  ],
+    imports: [
+        CommonModule,
+        SharedPnModule,
+        MDBBootstrapModule,
+        AppointmentPnRoutingModule,
+        TranslateModule,
+        FormsModule,
+        NgSelectModule,
+        EformSharedModule,
+        FontAwesomeModule,
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory
+        }),
+        CasesModule,
+        OwlDateTimeModule
+    ],
   declarations: [
     AppointmentPnLayoutComponent,
     AppointmentSettingsComponent,
