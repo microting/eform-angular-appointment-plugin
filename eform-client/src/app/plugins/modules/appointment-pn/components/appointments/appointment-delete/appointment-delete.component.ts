@@ -8,7 +8,7 @@ import {AppointmentPnCalendarService} from '../../../services';
   styleUrls: ['./appointment-delete.component.scss']
 })
 export class AppointmentDeleteComponent implements OnInit {
-  @ViewChild('frame', {static: false}) frame;
+  @ViewChild('frame') frame;
   @Output() appointmentDeleted: EventEmitter<void> = new EventEmitter<void>();
   spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();

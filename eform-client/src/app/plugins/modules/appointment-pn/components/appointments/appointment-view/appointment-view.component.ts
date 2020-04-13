@@ -9,7 +9,7 @@ import * as moment from 'moment';
   styleUrls: ['./appointment-view.component.scss']
 })
 export class AppointmentViewComponent implements OnInit {
-  @ViewChild('frame', {static: false}) frame;
+  @ViewChild('frame') frame;
   @Output() appointmentSaved: EventEmitter<void> = new EventEmitter<void>();
   spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();

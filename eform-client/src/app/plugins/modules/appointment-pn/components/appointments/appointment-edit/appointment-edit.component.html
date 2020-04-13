@@ -9,8 +9,7 @@
             <div class="row">
               <div class="col">
                 <div class="md-form">
-                  <input mdbInputDirective
-                         [mdbValidate]="false"
+                  <input mdbInput
                          [(ngModel)]="selectedModel.title"
                          type="text" id="title"
                          name="title" class="form-control" required>
@@ -21,9 +20,8 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="md-form" [owlDateTimeTrigger]="dt1">
-                  <input mdbInputDirective
+                  <input mdbInput
                          [owlDateTime]="dt1"
-                         [mdbValidate]="false"
                          [(ngModel)]="selectedModel.startAt"
                          type="text" id="startAt"
                          name="startAt" class="form-control" required>
@@ -33,9 +31,8 @@
               </div>
               <div class="col-md-6">
                 <div class="md-form" [owlDateTimeTrigger]="dt2">
-                  <input mdbInputDirective
+                  <input mdbInput
                          [owlDateTime]="dt2"
-                         [mdbValidate]="false"
                          [(ngModel)]="selectedModel.expireAt"
                          type="text" id="expireAt"
                          name="expireAt" class="form-control" required>
@@ -47,8 +44,7 @@
             <div class="row">
               <div class="col-md-4">
                 <div class="md-form">
-                  <input mdbInputDirective
-                         [mdbValidate]="false"
+                  <input mdbInput
                          [(ngModel)]="selectedModel.repeatEvery"
                          type="text" id="createRepeatEvery"
                          name="createRepeatEvery" class="form-control">
@@ -70,9 +66,8 @@
               </div>
               <div class="col-md-4">
                 <div class="md-form" [owlDateTimeTrigger]="dt3">
-                  <input mdbInputDirective
+                  <input mdbInput
                          [owlDateTime]="dt3"
-                         [mdbValidate]="false"
                          [(ngModel)]="selectedModel.repeatUntil"
                          type="text" id="createRepeatUntil"
                          name="createRepeatUntil" class="form-control">
@@ -84,8 +79,7 @@
             <div class="row">
               <div class="col-lg-6">
                 <div class="md-form">
-                  <textarea mdbInputDirective
-                            [mdbValidate]="false"
+                  <textarea mdbInput
                             [(ngModel)]="selectedModel.description"
                             type="text" id="description"
                             name="description" class="md-textarea form-control"></textarea>
@@ -94,8 +88,7 @@
               </div>
               <div class="col-lg-6">
                 <div class="md-form">
-                  <textarea mdbInputDirective
-                            [mdbValidate]="false"
+                  <textarea mdbInput
                             [(ngModel)]="selectedModel.info"
                             type="text" id="info"
                             name="info" class="md-textarea form-control"></textarea>
@@ -159,8 +152,7 @@
             <div class="row">
               <div class="col-xl-10 col-lg-9 col-md-8 col-sm-7">
                 <div class="md-form">
-                  <input mdbInputDirective
-                         [mdbValidate]="false"
+                  <input mdbInput
                          [(ngModel)]="selectedModel.colorHex"
                          type="text" id="colorHex"
                          name="colorHex" class="form-control" required>
@@ -169,7 +161,7 @@
               </div>
               <div class="col-xl-2 col-lg-3 col-md-4 col-sm-5">
                 <div class="py-4">
-                  <input mdbInputDirective
+                  <input mdbInput
                          [(ngModel)]="selectedModel.colorHex"
                          type="color" id="colorPicker" style="min-height: 40px"
                          name="colorPicker" class="form-control">
