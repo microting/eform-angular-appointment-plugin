@@ -17,7 +17,7 @@ import {DateTimeAdapter} from 'ng-pick-datetime-ex';
   styleUrls: ['./appointment-edit.component.scss']
 })
 export class AppointmentEditComponent implements OnInit {
-  @ViewChild('frame', {static: false}) frame;
+  @ViewChild('frame') frame;
   @Output() appointmentSaved: EventEmitter<void> = new EventEmitter<void>();
   spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();

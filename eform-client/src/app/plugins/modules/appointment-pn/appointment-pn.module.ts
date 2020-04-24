@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import {CommonModule, registerLocaleData} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MDBBootstrapModule } from 'port/angular-bootstrap-md';
+import { MDBBootstrapModule } from 'angular-bootstrap-md';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { SharedPnModule } from '../shared/shared-pn.module';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -24,26 +24,28 @@ import {adapterFactory} from 'angular-calendar/date-adapters/date-fns';
 import localeDa from '@angular/common/locales/da';
 import {AppointmentPrefillFieldComponent} from './components/appointments/appointment-prefill-field/appointment-prefill-field.component';
 import {CasesModule} from '../../../modules';
+import {OwlDateTimeModule} from 'ng-pick-datetime-ex';
 
 registerLocaleData(localeDa);
 
 @NgModule({
-  imports: [
-    CommonModule,
-    SharedPnModule,
-    MDBBootstrapModule,
-    AppointmentPnRoutingModule,
-    TranslateModule,
-    FormsModule,
-    NgSelectModule,
-    EformSharedModule,
-    FontAwesomeModule,
-    CalendarModule.forRoot({
-      provide: DateAdapter,
-      useFactory: adapterFactory
-    }),
-    CasesModule
-  ],
+    imports: [
+        CommonModule,
+        SharedPnModule,
+        MDBBootstrapModule,
+        AppointmentPnRoutingModule,
+        TranslateModule,
+        FormsModule,
+        NgSelectModule,
+        EformSharedModule,
+        FontAwesomeModule,
+        CalendarModule.forRoot({
+            provide: DateAdapter,
+            useFactory: adapterFactory
+        }),
+        CasesModule,
+        OwlDateTimeModule
+    ],
   declarations: [
     AppointmentPnLayoutComponent,
     AppointmentSettingsComponent,
