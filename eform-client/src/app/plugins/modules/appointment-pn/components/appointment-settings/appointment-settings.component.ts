@@ -10,7 +10,6 @@ import {AppointmentPnSettingsService} from '../../services';
   styleUrls: ['./appointment-settings.component.scss']
 })
 export class AppointmentSettingsComponent implements OnInit {
-  spinnerStatus = false;
   settingsModel: AppointmentBaseSettingsModel = new AppointmentBaseSettingsModel();
 
   constructor(private appointmentPnSettingsService: AppointmentPnSettingsService, private router: Router) {
@@ -23,21 +22,19 @@ export class AppointmentSettingsComponent implements OnInit {
 
   getSettings() {
     // debugger;
-    this.spinnerStatus = true;
     this.appointmentPnSettingsService.getAllSettings().subscribe((data) => {
       if (data && data.success) {
         this.settingsModel = data.model;
-      } this.spinnerStatus = false;
+      }
     });
   }
 
   updateSettings() {
-    this.spinnerStatus = true;
     this.appointmentPnSettingsService.updateSettings(this.settingsModel)
       .subscribe((data) => {
         if (data && data.success) {
 
-        } this.spinnerStatus = false;
+        }
       });
   }
 }

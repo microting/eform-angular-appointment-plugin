@@ -10,7 +10,6 @@ import {AppointmentPnCalendarService} from '../../../services';
 export class AppointmentDeleteComponent implements OnInit {
   @ViewChild('frame') frame;
   @Output() appointmentDeleted: EventEmitter<void> = new EventEmitter<void>();
-  spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();
 
   constructor(private appointmentPnCalendarService: AppointmentPnCalendarService) {
@@ -25,12 +24,11 @@ export class AppointmentDeleteComponent implements OnInit {
   }
 
   deleteAppointment() {
-    this.spinnerStatus = true;
     this.appointmentPnCalendarService.deleteAppointment(this.selectedModel.id).subscribe((data) => {
       if (data && data.success) {
         this.appointmentDeleted.emit();
         this.frame.hide();
-      } this.spinnerStatus = false;
+      }
     });
   }
 }

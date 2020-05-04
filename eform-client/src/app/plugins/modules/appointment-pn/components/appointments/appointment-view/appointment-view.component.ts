@@ -11,7 +11,6 @@ import * as moment from 'moment';
 export class AppointmentViewComponent implements OnInit {
   @ViewChild('frame') frame;
   @Output() appointmentSaved: EventEmitter<void> = new EventEmitter<void>();
-  spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();
 
   constructor(private appointmentPnCalendarService: AppointmentPnCalendarService) {

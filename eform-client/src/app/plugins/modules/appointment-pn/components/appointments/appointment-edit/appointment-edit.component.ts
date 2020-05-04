@@ -19,7 +19,6 @@ import {DateTimeAdapter} from 'ng-pick-datetime-ex';
 export class AppointmentEditComponent implements OnInit {
   @ViewChild('frame') frame;
   @Output() appointmentSaved: EventEmitter<void> = new EventEmitter<void>();
-  spinnerStatus = false;
   selectedModel: AppointmentModel = new AppointmentModel();
   templateRequestModel: TemplateRequestModel = new TemplateRequestModel();
   templatesModel: TemplateListModel = new TemplateListModel();
@@ -85,8 +84,6 @@ export class AppointmentEditComponent implements OnInit {
     if (!this.selectedModel.title || !this.selectedModel.startAt || !this.selectedModel.expireAt) {
       return;
     }
-
-    this.spinnerStatus = true;
     this.selectedModel.startAt.utcOffset(0, false);
 
     if (this.selectedModel.expireAt) {
@@ -103,7 +100,7 @@ export class AppointmentEditComponent implements OnInit {
             this.appointmentSaved.emit();
             this.selectedModel = new AppointmentModel();
             this.frame.hide();
-          } this.spinnerStatus = false;
+          }
         });
     } else {
       this.appointmentPnCalendarService.createAppointment(this.selectedModel)
@@ -113,7 +110,7 @@ export class AppointmentEditComponent implements OnInit {
             this.selectedModel = new AppointmentModel();
             this.frame.hide();
           }
-          this.spinnerStatus = false;
+
         });
     }
   }
