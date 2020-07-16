@@ -116,7 +116,7 @@ export class AppointmentEditComponent implements OnInit {
   }
 
   updateSites() {
-    if (this.authService.userClaims.eFormsPairingRead) {
+    if (this.authService.userClaims.eformsPairingRead) {
       this.sitesService.getAllSitesForPairing().subscribe(operation => {
         if (operation && operation.success) {
           this.pairingSites = operation.model.map(dto => ({site: dto, deploy: this.selectedModel.siteUids.some(s => s === dto.siteUId)}));
