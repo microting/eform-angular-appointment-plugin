@@ -84,16 +84,9 @@ namespace Appointment.Pn
         public void ConfigureDbContext(IServiceCollection services, string connectionString)
         {
             _connectionString = connectionString;
-            if (connectionString.ToLower().Contains("convert zero datetime"))
-            {
-                services.AddDbContext<AppointmentPnDbContext>(o => o.UseMySql(connectionString,
-                    b => b.MigrationsAssembly(PluginAssembly().FullName)));
-            }
-            else
-            {
-                services.AddDbContext<AppointmentPnDbContext>(o => o.UseSqlServer(connectionString,
-                    b => b.MigrationsAssembly(PluginAssembly().FullName)));
-            }
+
+            services.AddDbContext<AppointmentPnDbContext>(o => o.UseMySql(connectionString,
+                b => b.MigrationsAssembly(PluginAssembly().FullName)));
 
             AppointmentPnContextFactory contextFactory = new AppointmentPnContextFactory();
             var context = contextFactory.CreateDbContext(new[] {connectionString});
