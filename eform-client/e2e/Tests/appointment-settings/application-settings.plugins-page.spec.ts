@@ -11,8 +11,8 @@ describe('Application settings page - site header section', function () {
     });
     it('should go to plugin settings page', function () {
         loginPage.login();
-        myEformsPage.Navbar.advancedDropdown();
-        myEformsPage.Navbar.clickonSubMenuItem('Plugins');
+        myEformsPage.Navbar.advancedDropdownClick();
+        myEformsPage.Navbar.clickOnSubMenuItem('Plugins');
         $('#plugin-name').waitForDisplayed({timeout: 50000});
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
 
@@ -31,11 +31,11 @@ describe('Application settings page - site header section', function () {
         loginPage.open('/');
 
         loginPage.login();
-        myEformsPage.Navbar.advancedDropdown();
-        myEformsPage.Navbar.clickonSubMenuItem('Plugins');
+        myEformsPage.Navbar.advancedDropdownClick();
+        myEformsPage.Navbar.clickOnSubMenuItem('Plugins');
         $('#plugin-name').waitForDisplayed({timeout: 50000});
         $('#spinner-animation').waitForDisplayed({timeout: 90000, reverse: true});
-        
+
         const plugin = pluginsPage.getFirstPluginRowObj();
         expect(plugin.id).equal(1);
         expect(plugin.name).equal('Microting Appointment Plugin');
