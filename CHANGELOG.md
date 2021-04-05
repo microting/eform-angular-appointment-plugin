@@ -1,5 +1,14 @@
 # Changelog
 
+## [v1.0.143](https://github.com/microting/eform-angular-appointment-plugin/tree/v1.0.143) (2021-04-05)
+
+[Full Changelog](https://github.com/microting/eform-angular-appointment-plugin/compare/v1.0.142...v1.0.143)
+
+**Implemented enhancements:**
+
+- Bump Microting.eFormApi.BasePn from 2.0.110 to 2.0.111 [\#64](https://github.com/microting/eform-angular-appointment-plugin/issues/64)
+- Bump Microting.eForm from 4.4.17 to 4.4.19 [\#63](https://github.com/microting/eform-angular-appointment-plugin/issues/63)
+
 ## [v1.0.142](https://github.com/microting/eform-angular-appointment-plugin/tree/v1.0.142) (2021-04-04)
 
 [Full Changelog](https://github.com/microting/eform-angular-appointment-plugin/compare/v1.0.141...v1.0.142)
