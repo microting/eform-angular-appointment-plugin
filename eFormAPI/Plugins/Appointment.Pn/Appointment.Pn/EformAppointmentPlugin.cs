@@ -59,7 +59,7 @@ namespace Appointment.Pn
         private string _connectionString;
         private int _maxParallelism = 1;
         private int _numberOfWorkers = 1;
-        
+
         public Assembly PluginAssembly()
         {
             return typeof(EformAppointmentPlugin).GetTypeInfo().Assembly;
@@ -87,8 +87,12 @@ namespace Appointment.Pn
         {
             _connectionString = connectionString;
 
-            services.AddDbContext<AppointmentPnDbContext>(o => o.UseMySql(connectionString,
-                b => b.MigrationsAssembly(PluginAssembly().FullName)));
+            services.AddDbContext<AppointmentPnDbContext>(o => o.UseMySql(connectionString, new MariaDbServerVersion(
+                    new Version(10, 4, 0)), mySqlOptionsAction: builder =>
+                {
+                    builder.EnableRetryOnFailure();
+                    builder.MigrationsAssembly(PluginAssembly().FullName);
+                }));
 
             AppointmentPnContextFactory contextFactory = new AppointmentPnContextFactory();
             var context = contextFactory.CreateDbContext(new[] {connectionString});
@@ -244,8 +248,8 @@ namespace Appointment.Pn
             var seedData = new AppointmentConfigurationSeedData();
             var contextFactory = new AppointmentPnContextFactory();
             builder.AddPluginConfiguration(
-                connectionString, 
-                seedData, 
+                connectionString,
+                seedData,
                 contextFactory);
 
             // Add handlers
