@@ -87,7 +87,7 @@ namespace Appointment.Pn
         {
             _connectionString = connectionString;
 
-            services.AddDbContext<AppointmentPnDbContext>(o => o.UseMySql(connectionString, new MariaDbServerVersion(
+            services.AddDbContextPool<AppointmentPnDbContext>(o => o.UseMySql(connectionString, new MariaDbServerVersion(
                     new Version(10, 4, 0)), mySqlOptionsAction: builder =>
                 {
                     builder.EnableRetryOnFailure();
